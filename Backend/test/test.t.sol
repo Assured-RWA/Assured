@@ -20,8 +20,8 @@ contract Premium is Test {
         vm.deal(clientA, 1000 wei); // Fund the caller with 1 ether (or sufficient amount)
         vm.prank(clientA); // Set msg.sender for the next transaction
         address contractAddress = address(premiumCalculator);
-        premiumCalculator.bookInspection{value: 100}(1);
-        assertEq(premiumCalculator.assetOwner(1), clientA);
+        premiumCalculator.bookPropertyInspection{value: 100}("Narayi");
+        assertEq(premiumCalculator.returnPropertyOwner(1), clientA);
         uint256 balance = address(contractAddress).balance;
         assertEq(balance, 100 wei);
     }
@@ -30,7 +30,7 @@ contract Premium is Test {
         vm.deal(clientA, 1000 wei); // Fund the caller with 1 ether (or sufficient amount)
         vm.prank(clientA); // Set msg.sender for the next transaction
         address contractAddress = address(premiumCalculator);
-        premiumCalculator.bookInspection{value: 100}(1);
+        premiumCalculator.bookPropertyInspection{value: 100}("Narayi");
         vm.prank(expectedOwner);
         premiumCalculator.makeInspector(inspector, 1);
         bool s = premiumCalculator.returnInspectorStatus(inspector);
@@ -48,7 +48,7 @@ contract Premium is Test {
             5000
         );
 
-        premiumCalculator.returnPremium(1);
+        premiumCalculator.returnPropertyPremium(1);
 
         uint256 contractBalance = address(contractAddress).balance;
         uint256 inspectorBalance = address(inspector).balance;

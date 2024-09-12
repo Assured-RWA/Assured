@@ -4,7 +4,8 @@ pragma solidity ^0.8.0;
 // This contract calculates insurance premiums for property based on various risk factors like location, age, and protective measures.
 
 contract PremiumCalculator {
-    uint public assetIds;
+    uint public propertyId;
+    uint public vehicleId;
     address owner = msg.sender;
 
     struct Inspectors {
@@ -20,7 +21,7 @@ contract PremiumCalculator {
         inspecting,
         inspected
     }
-    struct Asset {
+    struct Property {
         uint id;
         address owner;
         address inspector;
@@ -32,10 +33,26 @@ contract PremiumCalculator {
         uint safetyFeatures;
         uint propertyValue;
         uint premium;
+        string addr;
     }
 
-    Asset[] public pendingProperties;
-    Asset[] public pendingVehicles;
+    struct Vehicle {
+        uint id;
+        address owner;
+        address inspector;
+        InspectionStatus status;
+        string assetType;
+        uint assetLocation;
+        uint categoryofAsset;
+        uint ageOfAsset;
+        uint safetyFeatures;
+        uint propertyValue;
+        uint premium;
+        string addr;
+    }
+
+    Property[] public pendingProperties;
+    Vehicle[] public pendingVehicles;
 
     // struct Client {
     //     address addr;
@@ -45,7 +62,8 @@ contract PremiumCalculator {
 
     // mapping(address => Client) clients;
 
-    mapping(uint => Asset) assetId;
+    mapping(uint => Property) propertyIds;
+    mapping(uint => Vehicle) vehicleIds;
     mapping(address => Inspectors) inspectorss;
 
     modifier onlyOwner() {
@@ -53,45 +71,60 @@ contract PremiumCalculator {
         _;
     }
 
-    modifier onlyInspector() {
+    modifier onlyPropertyInspector() {
         Inspectors storage inspector = inspectorss[msg.sender];
         require(inspector.status, "you are Not an Inspector");
+        require(inspector.assetType == 1, "you are Not a Property Inspector");
         _;
     }
 
-    function bookInspection(uint8 _assetType) public payable returns (bool) {
-        string memory assetType;
-        if (_assetType == 1) {
-            assetType = "House";
-            require(msg.value == 100, "House inspection cost 100 wei");
-        }
+    modifier onlyVehicleInspector() {
+        Inspectors storage inspector = inspectorss[msg.sender];
+        require(inspector.status, "you are Not an Inspector");
+        require(inspector.assetType == 2, "you are Not a Vehicle Inspector");
+        _;
+    }
 
-        if (_assetType == 2) {
-            assetType = "Vehicle";
-            require(msg.value == 50, "Vehicle inspection cost 50 wei");
-        }
-        assetIds++;
-        Asset storage newAsset = assetId[assetIds];
-        newAsset.id = assetIds;
-        newAsset.owner = msg.sender;
-        newAsset.assetType = assetType;
-        newAsset.status = InspectionStatus.pending;
-        if (_assetType == 1) {
-            pendingProperties.push(newAsset);
-        }
+    function bookPropertyInspection(
+        string memory _address
+    ) public payable returns (bool) {
+        require(msg.value == 100, "House inspection cost 100 wei");
 
-        if (_assetType == 2) {
-            pendingVehicles.push(newAsset);
-        }
+        propertyId++;
+        Property storage newProperty = propertyIds[propertyId];
+        newProperty.id = propertyId;
+        newProperty.owner = msg.sender;
+        newProperty.assetType = "Property";
+        newProperty.addr = _address;
+        newProperty.status = InspectionStatus.pending;
+
+        pendingProperties.push(newProperty);
 
         return true;
     }
 
-    function inspectAVehicle(uint _vehicleId) public onlyInspector {
-        Asset storage vehicle = assetId[_vehicleId];
+    function bookVehicleInspection(
+        string memory _address
+    ) public payable returns (bool) {
+        require(msg.value == 50, "Vehicle inspection cost 50 wei");
+
+        vehicleId++;
+        Vehicle storage newVehicle = vehicleIds[vehicleId];
+        newVehicle.id = vehicleId;
+        newVehicle.owner = msg.sender;
+        newVehicle.assetType = "Vehicle";
+        newVehicle.addr = _address;
+        newVehicle.status = InspectionStatus.pending;
+
+        pendingVehicles.push(newVehicle);
+
+        return true;
+    }
+
+    function inspectAVehicle(uint _vehicleId) public onlyVehicleInspector {
+        Vehicle storage vehicle = vehicleIds[_vehicleId];
         Inspectors storage inspector = inspectorss[msg.sender];
 
-        require(inspector.assetType == 2, "You are not a Vehicle inspector");
         require(
             vehicle.status == InspectionStatus.pending,
             "Vehicle is not in need of Inspection"
@@ -102,11 +135,10 @@ contract PremiumCalculator {
         inspector.currentlyInspecting = true;
     }
 
-    function inspectAHouse(uint _propertyId) public onlyInspector {
-        Asset storage property = assetId[_propertyId];
+    function inspectAHouse(uint _propertyId) public onlyPropertyInspector {
+        Property storage property = propertyIds[_propertyId];
         Inspectors storage inspector = inspectorss[msg.sender];
 
-        require(inspector.assetType == 1, "You are not a property inspector");
         require(
             property.status == InspectionStatus.pending,
             "Property is not in need of Inspection"
@@ -117,14 +149,14 @@ contract PremiumCalculator {
     }
 
     function submitPropertyInspectionResultAndGenerate(
-        uint _assetId,
+        uint _propertyId,
         uint _location,
         uint _age,
         uint _type,
         uint _protection,
         uint _propertyValue
-    ) public onlyInspector {
-        Asset storage asset = assetId[_assetId];
+    ) public onlyPropertyInspector {
+        Property storage asset = propertyIds[_propertyId];
         Inspectors storage inspector = inspectorss[msg.sender];
         asset.assetLocation = _location;
         asset.ageOfAsset = _age;
@@ -164,7 +196,7 @@ contract PremiumCalculator {
     function viewPendingVehiclesInspections()
         public
         view
-        returns (Asset[] memory)
+        returns (Vehicle[] memory)
     {
         return pendingVehicles;
     }
@@ -172,18 +204,23 @@ contract PremiumCalculator {
     function viewPendingPropertiesInspections()
         public
         view
-        returns (Asset[] memory)
+        returns (Property[] memory)
     {
         return pendingProperties;
     }
 
-    function viewAsset(uint _assetId) public view returns (Asset memory) {
-        Asset storage newAsset = assetId[_assetId];
+    function viewProperty(uint _assetId) public view returns (Property memory) {
+        Property storage newAsset = propertyIds[_assetId];
         return newAsset;
     }
 
-    function assetOwner(uint _assetId) public view returns (address) {
-        Asset storage newAsset = assetId[_assetId];
+    function viewVehicle(uint _assetId) public view returns (Vehicle memory) {
+        Vehicle storage newAsset = vehicleIds[_assetId];
+        return newAsset;
+    }
+
+    function returnPropertyOwner(uint _assetId) public view returns (address) {
+        Property storage newAsset = propertyIds[_assetId];
         return newAsset.owner;
     }
 
@@ -226,8 +263,8 @@ contract PremiumCalculator {
         return inspectorss[inspector].status;
     }
 
-    function returnPremium(uint id) public view returns (uint) {
-        Asset storage asset = assetId[id];
+    function returnPropertyPremium(uint id) public view returns (uint) {
+        Property storage asset = propertyIds[id];
         return asset.premium;
     }
 }
