@@ -72,10 +72,10 @@ library AssuredLibrary {
     }
 
     function calculateVehicleInsurancePremium(
-        uint vehicleType, // Type of vehicle (e.g., 1 = car, 2 = motorcycle)
+        uint vehicleType, // Type of vehicle
         uint vehicleAge, // Age of the vehicle in years
         uint driverAge, // Age of the driver
-        uint safetyFeatures, // Number of safety features (can be a score)
+        uint safetyFeatures, // Number of safety features (a score / 100 determined by inspectors)
         uint vehicleValue, // Value of the vehicle
         uint claimHistory // Number of claims the driver has had
     ) internal pure returns (uint) {

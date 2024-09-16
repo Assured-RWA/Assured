@@ -76,4 +76,31 @@ contract Insurance {
 
         return true;
     }
+
+    function inspectAVehicle(uint _vehicleId) public onlyVehicleInspector {
+        AssuredLibrary.Vehicle storage vehicle = vehicleIds[_vehicleId];
+        AssuredLibrary.Inspectors storage inspector = inspectorss[msg.sender];
+
+        require(
+            vehicle.status == AssuredLibrary.InspectionStatus.pending,
+            "Vehicle is not in need of Inspection"
+        );
+        vehicle.status = AssuredLibrary.InspectionStatus.inspecting;
+        vehicle.inspector = msg.sender;
+
+        inspector.currentlyInspecting = true;
+    }
+
+    function inspectAHouse(uint _propertyId) public onlyPropertyInspector {
+        AssuredLibrary.Property storage property = propertyIds[_propertyId];
+        AssuredLibrary.Inspectors storage inspector = inspectorss[msg.sender];
+
+        require(
+            property.status == AssuredLibrary.InspectionStatus.pending,
+            "Property is not in need of Inspection"
+        );
+        property.status = AssuredLibrary.InspectionStatus.inspecting;
+        property.inspector = msg.sender;
+        inspector.currentlyInspecting = true;
+    }
 }
