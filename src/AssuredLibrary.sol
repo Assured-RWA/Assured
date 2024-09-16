@@ -9,6 +9,7 @@ library AssuredLibrary {
         uint assetInspected;
         bool currentlyInspecting;
         bool status;
+        uint inspectorId;
     }
 
     enum InspectionStatus {
