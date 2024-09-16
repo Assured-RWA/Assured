@@ -10,13 +10,14 @@ contract Premium is Test {
     address expectedOwner = address(this);
     address clientA = address(0xa);
     address inspector = address(0xF);
+    address vehicleInspector = address(0xAF);
 
     function setUp() public {
         vm.prank(expectedOwner);
         premiumCalculator = new PremiumCalculator();
     }
 
-    function test_bookInspection(uint) public {
+    function test_bookPropertyInspection(uint) public {
         vm.deal(clientA, 1000 wei); // Fund the caller with 1 ether (or sufficient amount)
         vm.prank(clientA); // Set msg.sender for the next transaction
         address contractAddress = address(premiumCalculator);
@@ -26,7 +27,7 @@ contract Premium is Test {
         assertEq(balance, 100 wei);
     }
 
-    function test_generatePremium(uint) public {
+    function test_generatePropertyPremium(uint) public {
         vm.deal(clientA, 1000 wei); // Fund the caller with 1 ether (or sufficient amount)
         vm.prank(clientA); // Set msg.sender for the next transaction
         address contractAddress = address(premiumCalculator);
@@ -54,5 +55,15 @@ contract Premium is Test {
         uint256 inspectorBalance = address(inspector).balance;
         assertEq(contractBalance, 25 wei);
         assertEq(inspectorBalance, 75 wei);
+    }
+
+    function test_bookVehicleInspection(uint) public {
+        vm.deal(clientA, 1000 wei); // Fund the caller with 1 ether (or sufficient amount)
+        vm.prank(clientA); // Set msg.sender for the next transaction
+        address contractAddress = address(premiumCalculator);
+        premiumCalculator.bookVehicleInspection{value: 50}("Narayi");
+        assertEq(premiumCalculator.returnVehicleOwner(1), clientA);
+        uint256 balance = address(contractAddress).balance;
+        assertEq(balance, 50 wei);
     }
 }
