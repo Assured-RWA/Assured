@@ -1,70 +1,24 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
+import "./AssuredLibrary.sol";
+
 // This contract calculates insurance premiums for property based on various risk factors like location, age, and protective measures.
 
 contract PremiumCalculator {
+    using AssuredLibrary for AssuredLibrary.Inspectors;
+    using AssuredLibrary for AssuredLibrary.Property;
+    using AssuredLibrary for AssuredLibrary.InspectionStatus;
     uint public propertyId;
     uint public vehicleId;
     address owner = msg.sender;
 
-    struct Inspectors {
-        uint8 assetType;
-        uint assetInspected;
-        bool currentlyInspecting;
-        bool status;
-        address inspectee;
-    }
-    enum InspectionStatus {
-        none,
-        pending,
-        inspecting,
-        inspected
-    }
-    struct Property {
-        uint id;
-        address owner;
-        address inspector;
-        InspectionStatus status;
-        string assetType;
-        uint assetLocation;
-        uint categoryofAsset;
-        uint ageOfAsset;
-        uint safetyFeatures;
-        uint propertyValue;
-        uint premium;
-        string addr;
-    }
+    AssuredLibrary.Property[] public pendingProperties;
+    AssuredLibrary.Vehicle[] public pendingVehicles;
 
-    struct Vehicle {
-        uint id;
-        address owner;
-        address inspector;
-        InspectionStatus status;
-        string assetType;
-        uint assetLocation;
-        uint categoryofAsset;
-        uint ageOfAsset;
-        uint safetyFeatures;
-        uint propertyValue;
-        uint premium;
-        string addr;
-    }
-
-    Property[] public pendingProperties;
-    Vehicle[] public pendingVehicles;
-
-    // struct Client {
-    //     address addr;
-    //     string asset;
-    //     InspectionStatus status;
-    // }
-
-    // mapping(address => Client) clients;
-
-    mapping(uint => Property) propertyIds;
-    mapping(uint => Vehicle) vehicleIds;
-    mapping(address => Inspectors) inspectorss;
+    mapping(uint => AssuredLibrary.Property) propertyIds;
+    mapping(uint => AssuredLibrary.Vehicle) vehicleIds;
+    mapping(address => AssuredLibrary.Inspectors) inspectorss;
 
     modifier onlyOwner() {
         require(msg.sender == owner, "Only Owner can Perform this Action");
@@ -72,14 +26,14 @@ contract PremiumCalculator {
     }
 
     modifier onlyPropertyInspector() {
-        Inspectors storage inspector = inspectorss[msg.sender];
+        AssuredLibrary.Inspectors storage inspector = inspectorss[msg.sender];
         require(inspector.status, "you are Not an Inspector");
         require(inspector.assetType == 1, "you are Not a Property Inspector");
         _;
     }
 
     modifier onlyVehicleInspector() {
-        Inspectors storage inspector = inspectorss[msg.sender];
+        AssuredLibrary.Inspectors storage inspector = inspectorss[msg.sender];
         require(inspector.status, "you are Not an Inspector");
         require(inspector.assetType == 2, "you are Not a Vehicle Inspector");
         _;
@@ -91,12 +45,12 @@ contract PremiumCalculator {
         require(msg.value == 100, "House inspection cost 100 wei");
 
         propertyId++;
-        Property storage newProperty = propertyIds[propertyId];
+        AssuredLibrary.Property storage newProperty = propertyIds[propertyId];
         newProperty.id = propertyId;
         newProperty.owner = msg.sender;
         newProperty.assetType = "Property";
         newProperty.addr = _address;
-        newProperty.status = InspectionStatus.pending;
+        newProperty.status = AssuredLibrary.InspectionStatus.pending;
 
         pendingProperties.push(newProperty);
 
@@ -109,12 +63,12 @@ contract PremiumCalculator {
         require(msg.value == 50, "Vehicle inspection cost 50 wei");
 
         vehicleId++;
-        Vehicle storage newVehicle = vehicleIds[vehicleId];
+        AssuredLibrary.Vehicle storage newVehicle = vehicleIds[vehicleId];
         newVehicle.id = vehicleId;
         newVehicle.owner = msg.sender;
         newVehicle.assetType = "Vehicle";
         newVehicle.addr = _address;
-        newVehicle.status = InspectionStatus.pending;
+        newVehicle.status = AssuredLibrary.InspectionStatus.pending;
 
         pendingVehicles.push(newVehicle);
 
@@ -122,28 +76,28 @@ contract PremiumCalculator {
     }
 
     function inspectAVehicle(uint _vehicleId) public onlyVehicleInspector {
-        Vehicle storage vehicle = vehicleIds[_vehicleId];
-        Inspectors storage inspector = inspectorss[msg.sender];
+        AssuredLibrary.Vehicle storage vehicle = vehicleIds[_vehicleId];
+        AssuredLibrary.Inspectors storage inspector = inspectorss[msg.sender];
 
         require(
-            vehicle.status == InspectionStatus.pending,
+            vehicle.status == AssuredLibrary.InspectionStatus.pending,
             "Vehicle is not in need of Inspection"
         );
-        vehicle.status = InspectionStatus.inspecting;
+        vehicle.status = AssuredLibrary.InspectionStatus.inspecting;
         vehicle.inspector = msg.sender;
 
         inspector.currentlyInspecting = true;
     }
 
     function inspectAHouse(uint _propertyId) public onlyPropertyInspector {
-        Property storage property = propertyIds[_propertyId];
-        Inspectors storage inspector = inspectorss[msg.sender];
+        AssuredLibrary.Property storage property = propertyIds[_propertyId];
+        AssuredLibrary.Inspectors storage inspector = inspectorss[msg.sender];
 
         require(
-            property.status == InspectionStatus.pending,
+            property.status == AssuredLibrary.InspectionStatus.pending,
             "Property is not in need of Inspection"
         );
-        property.status = InspectionStatus.inspecting;
+        property.status = AssuredLibrary.InspectionStatus.inspecting;
         property.inspector = msg.sender;
         inspector.currentlyInspecting = true;
     }
@@ -156,13 +110,13 @@ contract PremiumCalculator {
         uint _protection,
         uint _propertyValue
     ) public onlyPropertyInspector {
-        Property storage asset = propertyIds[_propertyId];
-        Inspectors storage inspector = inspectorss[msg.sender];
+        AssuredLibrary.Property storage asset = propertyIds[_propertyId];
+        AssuredLibrary.Inspectors storage inspector = inspectorss[msg.sender];
         asset.assetLocation = _location;
         asset.ageOfAsset = _age;
         asset.categoryofAsset = _type;
         asset.safetyFeatures = _protection;
-        asset.status = InspectionStatus.inspected;
+        asset.status = AssuredLibrary.InspectionStatus.inspected;
         asset.propertyValue = _propertyValue;
         uint premium = calculatePropertyInsurancePremium(
             _location,
@@ -175,28 +129,28 @@ contract PremiumCalculator {
         asset.premium = premium;
         inspector.currentlyInspecting = false;
 
-        address recipient = inspector.inspectee;
+        address recipient = inspector.inspector;
 
         (bool success, ) = recipient.call{value: 75}("");
         require(success, "Transfer failed.");
     }
 
     function makeInspector(address addr, uint8 _type) public onlyOwner {
-        Inspectors storage inspector = inspectorss[addr];
-        inspector.inspectee = addr;
+        AssuredLibrary.Inspectors storage inspector = inspectorss[addr];
+        inspector.inspector = addr;
         inspector.assetType = _type;
         inspector.status = true;
     }
 
     function removeInspector(address addr) public onlyOwner {
-        Inspectors storage inspector = inspectorss[addr];
+        AssuredLibrary.Inspectors storage inspector = inspectorss[addr];
         inspector.status = false;
     }
 
     function viewPendingVehiclesInspections()
         public
         view
-        returns (Vehicle[] memory)
+        returns (AssuredLibrary.Vehicle[] memory)
     {
         return pendingVehicles;
     }
@@ -204,28 +158,32 @@ contract PremiumCalculator {
     function viewPendingPropertiesInspections()
         public
         view
-        returns (Property[] memory)
+        returns (AssuredLibrary.Property[] memory)
     {
         return pendingProperties;
     }
 
-    function viewProperty(uint _assetId) public view returns (Property memory) {
-        Property storage newAsset = propertyIds[_assetId];
+    function viewProperty(
+        uint _assetId
+    ) public view returns (AssuredLibrary.Property memory) {
+        AssuredLibrary.Property storage newAsset = propertyIds[_assetId];
         return newAsset;
     }
 
-    function viewVehicle(uint _assetId) public view returns (Vehicle memory) {
-        Vehicle storage newAsset = vehicleIds[_assetId];
+    function viewVehicle(
+        uint _assetId
+    ) public view returns (AssuredLibrary.Vehicle memory) {
+        AssuredLibrary.Vehicle storage newAsset = vehicleIds[_assetId];
         return newAsset;
     }
 
     function returnPropertyOwner(uint _assetId) public view returns (address) {
-        Property storage newAsset = propertyIds[_assetId];
+        AssuredLibrary.Property storage newAsset = propertyIds[_assetId];
         return newAsset.owner;
     }
 
     function returnVehicleOwner(uint _assetId) public view returns (address) {
-        Vehicle storage newAsset = vehicleIds[_assetId];
+        AssuredLibrary.Vehicle storage newAsset = vehicleIds[_assetId];
         return newAsset.owner;
     }
 
@@ -269,7 +227,7 @@ contract PremiumCalculator {
     }
 
     function returnPropertyPremium(uint id) public view returns (uint) {
-        Property storage asset = propertyIds[id];
+        AssuredLibrary.Property storage asset = propertyIds[id];
         return asset.premium;
     }
 }
