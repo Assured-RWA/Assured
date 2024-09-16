@@ -224,6 +224,11 @@ contract PremiumCalculator {
         return newAsset.owner;
     }
 
+    function returnVehicleOwner(uint _assetId) public view returns (address) {
+        Vehicle storage newAsset = vehicleIds[_assetId];
+        return newAsset.owner;
+    }
+
     function calculatePropertyInsurancePremium(
         uint location,
         uint propertyType,
