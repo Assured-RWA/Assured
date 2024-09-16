@@ -9,8 +9,9 @@ contract CentralStorage {
 
     uint public propertyId;
     uint public vehicleId;
+
     uint inspectorsId;
-    address daoAddress;
+    address public daoAddress;
 
     AssuredLibrary.Property[] public pendingProperties;
     AssuredLibrary.Vehicle[] public pendingVehicles;
@@ -24,17 +25,19 @@ contract CentralStorage {
         daoAddress = _daoAddress;
     }
 
-    modifier onlyDao() {
-        require(msg.sender == daoAddress, "Only Owner can Perform this Action");
-        _;
+    function onlyDao() public view returns (address, address) {
+        // require(msg.sender == daoAddress, "Only Owner can Perform this Action");
+        return (tx.origin, msg.sender);
     }
 
     // Function to set data
     function setInspector(
         address _address,
         AssuredLibrary.Inspectors memory _inspector
-    ) public onlyDao {
+    ) public {
         inspectors[_address] = _inspector;
+        AssuredLibrary.Inspectors storage newInspector = inspectors[_address];
+        newInspector.inspector = _address;
     }
 
     // Function to get data
@@ -44,7 +47,7 @@ contract CentralStorage {
         return inspectors[_adddress];
     }
 
-    function deleteInspector(address _inspector) public onlyDao {
+    function deleteInspector(address _inspector) public {
         delete inspectors[_inspector];
     }
 
@@ -54,5 +57,41 @@ contract CentralStorage {
 
     function returnInspectorsId() public view returns (uint) {
         return inspectorsId;
+    }
+
+    function incrementPropertyId() public {
+        propertyId++;
+    }
+
+    function returnPropertyId() public view returns (uint) {
+        return propertyId;
+    }
+
+    function setPropertyIds(AssuredLibrary.Property memory _property) public {
+        propertyIds[propertyId] = _property;
+    }
+
+    function getProperty(
+        uint _propertyId
+    ) public view returns (AssuredLibrary.Property memory _inspector) {
+        return propertyIds[_propertyId];
+    }
+
+    function incrementVehicleId() public {
+        vehicleId++;
+    }
+
+    function returnVehicleId() public view returns (uint) {
+        return vehicleId;
+    }
+
+    function setVehicleIds(AssuredLibrary.Vehicle memory _vehicle) public {
+        vehicleIds[vehicleId] = _vehicle;
+    }
+
+    function getVehicle(
+        uint _vehicleId
+    ) public view returns (AssuredLibrary.Vehicle memory _vehicle) {
+        return vehicleIds[_vehicleId];
     }
 }

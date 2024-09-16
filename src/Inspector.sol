@@ -31,6 +31,7 @@ contract Inspector {
     }
 
     function approveInspector(address _inspector) public returns (bool, uint) {
+        require(msg.sender == centralStorage.daoAddress(), "only dao can call");
         AssuredLibrary.Inspectors memory inspector = centralStorage
             .getInspector(_inspector);
 
@@ -62,10 +63,10 @@ contract Inspector {
 
     function returnInspectorStatus(
         address _inspector
-    ) public view returns (bool) {
+    ) public view returns (bool, AssuredLibrary.Inspectors memory) {
         AssuredLibrary.Inspectors memory inspector = centralStorage
             .getInspector(_inspector);
 
-        return inspector.valid;
+        return (inspector.valid, inspector);
     }
 }
