@@ -11,9 +11,6 @@ contract Insurance {
 
     CentralStorage centralStorage;
 
-    AssuredLibrary.Property[] public pendingProperties;
-    AssuredLibrary.Vehicle[] public pendingVehicles;
-
     constructor(address _centralStorage) {
         centralStorage = CentralStorage(_centralStorage);
     }
@@ -50,7 +47,7 @@ contract Insurance {
         newProperty.status = AssuredLibrary.InspectionStatus.pending;
 
         centralStorage.setProperty(newProperty);
-        pendingProperties.push(newProperty);
+        centralStorage.pushProperty(newProperty);
 
         return true;
     }
@@ -81,7 +78,7 @@ contract Insurance {
         newVehicle.vehicleValue = _vehicleValue;
         newVehicle.claimHistory = _claimHistory;
         centralStorage.setVehicle(newVehicle);
-        pendingVehicles.push(newVehicle);
+        centralStorage.pushVehicle(newVehicle);
 
         return true;
     }
