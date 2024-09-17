@@ -17,6 +17,7 @@ contract Premium is Test {
 
     address expectedOwner = address(this);
     address clientA = address(0xa);
+    address clientB = address(0xb);
     address inspector1 = address(0xF);
     address vehicleInspector = address(0xAF);
 
@@ -31,10 +32,9 @@ contract Premium is Test {
         insurance = new Insurance(centralStorageAddress);
     }
 
-    function test_makeInspector() public {
+    function test_Inspector() public {
         vm.prank(clientA);
-        // centralStorage.onlyDao();
-        // inspector.onlyDao();
+
         inspector.registerInspector(inspector1, 1);
         vm.prank(clientA);
         inspector.approveInspector(inspector1);
@@ -42,53 +42,79 @@ contract Premium is Test {
         inspector.returnInspectorStatus(inspector1);
     }
 
-    // function test_bookPropertyInspection(uint) public {
-    //     vm.deal(clientA, 1000 wei); // Fund the caller with 1 ether (or sufficient amount)
-    //     vm.prank(clientA); // Set msg.sender for the next transaction
-    //     address contractAddress = address(premiumCalculator);
-    //     premiumCalculator.bookPropertyInspection{value: 100}("Narayi");
-    //     assertEq(premiumCalculator.returnPropertyOwner(1), clientA);
-    //     uint256 balance = address(contractAddress).balance;
-    //     assertEq(balance, 100 wei);
-    // }`
+    function test_bookPropertyInspection(uint) public {
+        vm.deal(clientA, 1000 wei); // Fund the caller with 1 ether (or sufficient amount)
+        vm.prank(clientA); // Set msg.sender for the next transaction
+        address contractAddress = address(insurance);
+        insurance.bookPropertyInspection{value: 100}("Narayi");
+        assertEq(insurance.returnPropertyOwner(1), clientA);
+        uint256 balance = address(contractAddress).balance;
+        assertEq(balance, 100 wei);
+    }
 
-    // function test_generatePropertyPremium(uint) public {
-    //     vm.deal(clientA, 1000 wei); // Fund the caller with 1 ether (or sufficient amount)
-    //     vm.prank(clientA); // Set msg.sender for the next transaction
-    //     address contractAddress = address(premiumCalculator);
-    //     premiumCalculator.bookPropertyInspection{value: 100}("Narayi");
-    //     vm.prank(expectedOwner);
-    //     premiumCalculator.makeInspector(inspector1, 1);
-    //     bool s = premiumCalculator.returnInspectorStatus(inspector1);
+    function test_bookVehicleInspection(uint) public {
+        vm.deal(clientA, 1000 wei); // Fund the caller with 1 ether (or sufficient amount)
+        vm.prank(clientA); // Set msg.sender for the next transaction
+        address contractAddress = address(insurance);
+        insurance.bookVehicleInspection{value: 50}("Narayi");
+        assertEq(insurance.returnVehicleOwner(1), clientA);
+        uint256 balance = address(contractAddress).balance;
+        assertEq(balance, 50 wei);
+    }
 
-    //     assertEq(s, true);
-    //     vm.prank(inspector1);
-    //     premiumCalculator.inspectAHouse(1);
-    //     vm.prank(inspector1);
-    //     premiumCalculator.submitPropertyInspectionResultAndGenerate(
-    //         1,
-    //         80,
-    //         3,
-    //         150,
-    //         1,
-    //         5000
-    //     );
+    function test_generatePropertyPremium(uint) public {
+        vm.deal(clientA, 1000 wei); // Fund the caller with 1 ether (or sufficient amount)
+        vm.deal(clientB, 1000 wei);
+        vm.prank(clientA); // Set msg.sender for the next transaction
+        address contractAddress = address(insurance);
+        insurance.bookPropertyInspection{value: 100}("Narayi");
+        vm.prank(expectedOwner);
 
-    //     premiumCalculator.returnPropertyPremium(1);
+        inspector.registerInspector(inspector1, 1);
+        vm.prank(clientA);
+        inspector.approveInspector(inspector1);
 
-    //     uint256 contractBalance = address(contractAddress).balance;
-    //     uint256 inspectorBalance = address(inspector).balance;
-    //     assertEq(contractBalance, 25 wei);
-    //     assertEq(inspectorBalance, 75 wei);
-    // }
+        inspector.returnInspectorStatus(inspector1);
 
-    // function test_bookVehicleInspection(uint) public {
-    //     vm.deal(clientA, 1000 wei); // Fund the caller with 1 ether (or sufficient amount)
-    //     vm.prank(clientA); // Set msg.sender for the next transaction
-    //     address contractAddress = address(premiumCalculator);
-    //     premiumCalculator.bookVehicleInspection{value: 50}("Narayi");
-    //     assertEq(premiumCalculator.returnVehicleOwner(1), clientA);
-    //     uint256 balance = address(contractAddress).balance;
-    //     assertEq(balance, 50 wei);
-    // }
+        vm.prank(inspector1);
+        insurance.inspectAHouse(1);
+        inspector.returnInspectorStatus(inspector1);
+        vm.prank(inspector1);
+        insurance.submitPropertyInspectionResultAndGenerate(
+            1,
+            80,
+            3,
+            150,
+            1,
+            5000
+        );
+
+        uint256 contractBalance = address(contractAddress).balance;
+        uint256 inspectorBalance = address(inspector1).balance;
+        assertEq(contractBalance, 25 wei);
+        assertEq(inspectorBalance, 75 wei);
+
+        vm.prank(clientB); // Set msg.sender for the next transaction
+        insurance.bookPropertyInspection{value: 100}("Barnawa");
+        vm.prank(inspector1);
+        insurance.inspectAHouse(2);
+        inspector.returnInspectorStatus(inspector1);
+        vm.prank(inspector1);
+        insurance.submitPropertyInspectionResultAndGenerate(
+            1,
+            60,
+            8,
+            130,
+            1,
+            8000
+        );
+        insurance.returnPropertyOwner(1);
+        insurance.returnPropertyOwner(2);
+
+        uint256 contractBalance1 = address(contractAddress).balance;
+        uint256 inspectorBalance1 = address(inspector1).balance;
+
+        assertEq(contractBalance1, 50 wei);
+        assertEq(inspectorBalance1, 150 wei);
+    }
 }

@@ -18,7 +18,7 @@ contract CentralStorage {
 
     mapping(uint => AssuredLibrary.Property) propertyIds;
     mapping(uint => AssuredLibrary.Vehicle) vehicleIds;
-    mapping(address => AssuredLibrary.Inspectors) inspectors;
+    mapping(address => AssuredLibrary.Inspectors) public inspectors;
     mapping(uint => uint) public data; // Shared storage (can be any data structure)
 
     constructor(address _daoAddress) {
