@@ -94,4 +94,12 @@ contract CentralStorage {
     ) public view returns (AssuredLibrary.Vehicle memory _vehicle) {
         return vehicleIds[_vehicleId];
     }
+
+    function pushProperty(AssuredLibrary.Property memory _propery) public {
+        pendingProperties.push(_propery);
+    }
+
+    function pushVehicle(AssuredLibrary.Vehicle memory _vehicle) public {
+        pendingVehicles.push(_vehicle);
+    }
 }
