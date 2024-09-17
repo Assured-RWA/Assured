@@ -39,14 +39,14 @@ library AssuredLibrary {
         address owner;
         address inspector;
         InspectionStatus status;
-        string assetType;
-        uint assetLocation;
-        uint categoryofAsset;
-        uint ageOfAsset;
         uint safetyFeatures;
-        uint propertyValue;
+        uint vehicleValue;
+        uint vehicleAge;
         uint premium;
-        string addr;
+        uint vehicleType;
+        uint claimHistory;
+        uint driverAge;
+        string ownersAddress;
     }
 
     function calculatePropertyInsurancePremium(
