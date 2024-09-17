@@ -2,14 +2,14 @@
 pragma solidity ^0.8.0;
 
 import "./AssuredLibrary.sol";
+import "./CentralStorage.sol";
 
 contract Insurance {
     using AssuredLibrary for AssuredLibrary.Inspectors;
     using AssuredLibrary for AssuredLibrary.Property;
     using AssuredLibrary for AssuredLibrary.InspectionStatus;
-    uint public propertyId;
-    uint public vehicleId;
-    address daoAddress;
+
+    CentralStorage centralStorage;
 
     AssuredLibrary.Property[] public pendingProperties;
     AssuredLibrary.Vehicle[] public pendingVehicles;
@@ -18,13 +18,8 @@ contract Insurance {
     mapping(uint => AssuredLibrary.Vehicle) vehicleIds;
     mapping(address => AssuredLibrary.Inspectors) inspectorss;
 
-    constructor(address _daoAddress) {
-        daoAddress = _daoAddress;
-    }
-
-    modifier onlyDao() {
-        require(msg.sender == daoAddress, "Only Owner can Perform this Action");
-        _;
+    constructor(address _centralStorage) {
+        centralStorage = CentralStorage(_centralStorage);
     }
 
     modifier onlyPropertyInspector() {
@@ -46,9 +41,11 @@ contract Insurance {
     ) public payable returns (bool) {
         require(msg.value == 100, "House inspection cost 100 wei");
 
-        propertyId++;
-        AssuredLibrary.Property storage newProperty = propertyIds[propertyId];
-        newProperty.id = propertyId;
+        centralStorage.incrementPropertyId();
+        AssuredLibrary.Property storage newProperty = propertyIds[
+            centralStorage.returnPropertyId()
+        ];
+        newProperty.id = centralStorage.returnPropertyId();
         newProperty.owner = msg.sender;
         newProperty.assetType = "Property";
         newProperty.addr = _address;
@@ -64,9 +61,11 @@ contract Insurance {
     ) public payable returns (bool) {
         require(msg.value == 50, "Vehicle inspection cost 50 wei");
 
-        vehicleId++;
-        AssuredLibrary.Vehicle storage newVehicle = vehicleIds[vehicleId];
-        newVehicle.id = vehicleId;
+        centralStorage.incrementVehicleId();
+        AssuredLibrary.Vehicle storage newVehicle = vehicleIds[
+            centralStorage.returnVehicleId()
+        ];
+        newVehicle.id = centralStorage.returnVehicleId();
         newVehicle.owner = msg.sender;
         newVehicle.assetType = "Vehicle";
         newVehicle.addr = _address;
