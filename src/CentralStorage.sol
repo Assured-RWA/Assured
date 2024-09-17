@@ -67,7 +67,7 @@ contract CentralStorage {
         return propertyId;
     }
 
-    function setPropertyIds(AssuredLibrary.Property memory _property) public {
+    function setProperty(AssuredLibrary.Property memory _property) public {
         propertyIds[propertyId] = _property;
     }
 
@@ -85,7 +85,7 @@ contract CentralStorage {
         return vehicleId;
     }
 
-    function setVehicleIds(AssuredLibrary.Vehicle memory _vehicle) public {
+    function setVehicle(AssuredLibrary.Vehicle memory _vehicle) public {
         vehicleIds[vehicleId] = _vehicle;
     }
 

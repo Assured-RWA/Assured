@@ -2,14 +2,13 @@
 pragma solidity ^0.8.13;
 
 import {Test, console} from "forge-std/Test.sol";
-import {PremiumCalculator} from "../src/pemiumCalculator.sol";
+
 import {CentralStorage} from "../src/CentralStorage.sol";
 import {Inspector} from "../src/Inspector.sol";
 import {Insurance} from "../src/Insurance.sol";
 import {Dao} from "../src/Dao.sol";
 
 contract Premium is Test {
-    PremiumCalculator public premiumCalculator;
     CentralStorage public centralStorage;
     Inspector public inspector;
     Insurance public insurance;
@@ -23,7 +22,7 @@ contract Premium is Test {
 
     function setUp() public {
         vm.prank(expectedOwner);
-        premiumCalculator = new PremiumCalculator();
+
         dao = new Dao();
         // address daoAddress = address(dao);
         centralStorage = new CentralStorage(clientA);
@@ -56,7 +55,14 @@ contract Premium is Test {
         vm.deal(clientA, 1000 wei); // Fund the caller with 1 ether (or sufficient amount)
         vm.prank(clientA); // Set msg.sender for the next transaction
         address contractAddress = address(insurance);
-        insurance.bookVehicleInspection{value: 50}("Narayi");
+        insurance.bookVehicleInspection{value: 50}(
+            "Narayi",
+            120,
+            5,
+            25,
+            50000,
+            0
+        );
         assertEq(insurance.returnVehicleOwner(1), clientA);
         uint256 balance = address(contractAddress).balance;
         assertEq(balance, 50 wei);
@@ -116,5 +122,63 @@ contract Premium is Test {
 
         assertEq(contractBalance1, 50 wei);
         assertEq(inspectorBalance1, 150 wei);
+    }
+
+    function test_generateVehiclePremium(uint) public {
+        vm.deal(clientA, 1000 wei); // Fund the caller with 1 ether (or sufficient amount)
+        vm.deal(clientB, 1000 wei);
+        vm.prank(clientA); // Set msg.sender for the next transaction
+        address contractAddress = address(insurance);
+        insurance.bookVehicleInspection{value: 50}(
+            "Narayi",
+            120,
+            5,
+            25,
+            20000,
+            1
+        );
+        vm.prank(expectedOwner);
+
+        inspector.registerInspector(inspector1, 2);
+        vm.prank(clientA);
+        inspector.approveInspector(inspector1);
+
+        inspector.returnInspectorStatus(inspector1);
+
+        vm.prank(inspector1);
+        insurance.inspectAVehicle(1);
+        inspector.returnInspectorStatus(inspector1);
+        vm.prank(inspector1);
+        insurance.submitVehicleInspectionResultAndGenerate(1, 10);
+
+        uint256 contractBalance = address(contractAddress).balance;
+        uint256 inspectorBalance = address(inspector1).balance;
+        assertEq(contractBalance, 15 wei);
+        assertEq(inspectorBalance, 35 wei);
+
+        vm.prank(clientB); // Set msg.sender for the next transaction
+        insurance.bookVehicleInspection{value: 50}(
+            "Barnawa",
+            150,
+            2,
+            15,
+            50000,
+            0
+        );
+        vm.prank(clientA);
+        inspector.approveInspector(inspector1);
+        vm.prank(inspector1);
+        insurance.inspectAVehicle(2);
+        inspector.returnInspectorStatus(inspector1);
+        vm.prank(inspector1);
+        insurance.submitVehicleInspectionResultAndGenerate(2, 50);
+        insurance.returnPropertyOwner(1);
+        insurance.returnPropertyOwner(2);
+
+        uint256 contractBalance1 = address(contractAddress).balance;
+        uint256 inspectorBalance1 = address(inspector1).balance;
+
+        assertEq(contractBalance1, 30 wei);
+        assertEq(inspectorBalance1, 70 wei);
     }
 }

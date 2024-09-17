@@ -14,9 +14,6 @@ contract Insurance {
     AssuredLibrary.Property[] public pendingProperties;
     AssuredLibrary.Vehicle[] public pendingVehicles;
 
-    mapping(uint => AssuredLibrary.Property) propertyIds;
-    mapping(uint => AssuredLibrary.Vehicle) vehicleIds;
-
     constructor(address _centralStorage) {
         centralStorage = CentralStorage(_centralStorage);
     }
@@ -32,7 +29,7 @@ contract Insurance {
     modifier onlyVehicleInspector() {
         AssuredLibrary.Inspectors memory inspector = centralStorage
             .getInspector(msg.sender);
-        require(inspector.status, "you are Not an Inspector");
+        require(inspector.valid, "you are Not an Inspector");
         require(inspector.assetType == 2, "you are Not a Vehicle Inspector");
         _;
     }
@@ -43,42 +40,56 @@ contract Insurance {
         require(msg.value == 100, "House inspection cost 100 wei");
 
         centralStorage.incrementPropertyId();
-        AssuredLibrary.Property storage newProperty = propertyIds[
+        AssuredLibrary.Property memory newProperty = centralStorage.getProperty(
             centralStorage.returnPropertyId()
-        ];
+        );
         newProperty.id = centralStorage.returnPropertyId();
         newProperty.owner = msg.sender;
         newProperty.assetType = "Property";
         newProperty.addr = _address;
         newProperty.status = AssuredLibrary.InspectionStatus.pending;
 
+        centralStorage.setProperty(newProperty);
         pendingProperties.push(newProperty);
 
         return true;
     }
 
     function bookVehicleInspection(
-        string memory _address
+        string memory _address,
+        uint _vehicleType,
+        uint _vehicleAge,
+        uint _driverAge,
+        uint _vehicleValue,
+        uint _claimHistory
     ) public payable returns (bool) {
         require(msg.value == 50, "Vehicle inspection cost 50 wei");
 
         centralStorage.incrementVehicleId();
-        AssuredLibrary.Vehicle storage newVehicle = vehicleIds[
+        AssuredLibrary.Vehicle memory newVehicle = centralStorage.getVehicle(
             centralStorage.returnVehicleId()
-        ];
+        );
         newVehicle.id = centralStorage.returnVehicleId();
         newVehicle.owner = msg.sender;
-        newVehicle.assetType = "Vehicle";
-        newVehicle.addr = _address;
-        newVehicle.status = AssuredLibrary.InspectionStatus.pending;
 
+        newVehicle.ownersAddress = _address;
+        newVehicle.owner = msg.sender;
+        newVehicle.status = AssuredLibrary.InspectionStatus.pending;
+        newVehicle.vehicleType = _vehicleType;
+        newVehicle.vehicleAge = _vehicleAge;
+        newVehicle.driverAge = _driverAge;
+        newVehicle.vehicleValue = _vehicleValue;
+        newVehicle.claimHistory = _claimHistory;
+        centralStorage.setVehicle(newVehicle);
         pendingVehicles.push(newVehicle);
 
         return true;
     }
 
     function inspectAVehicle(uint _vehicleId) public onlyVehicleInspector {
-        AssuredLibrary.Vehicle storage vehicle = vehicleIds[_vehicleId];
+        AssuredLibrary.Vehicle memory vehicle = centralStorage.getVehicle(
+            _vehicleId
+        );
         AssuredLibrary.Inspectors memory inspector = centralStorage
             .getInspector(msg.sender);
 
@@ -91,10 +102,13 @@ contract Insurance {
 
         inspector.currentlyInspecting = true;
         centralStorage.setInspector(inspector.inspector, inspector);
+        centralStorage.setVehicle(vehicle);
     }
 
     function inspectAHouse(uint _propertyId) public onlyPropertyInspector {
-        AssuredLibrary.Property storage property = propertyIds[_propertyId];
+        AssuredLibrary.Property memory property = centralStorage.getProperty(
+            _propertyId
+        );
         AssuredLibrary.Inspectors memory inspector = centralStorage
             .getInspector(msg.sender);
 
@@ -106,6 +120,7 @@ contract Insurance {
         property.inspector = msg.sender;
         inspector.currentlyInspecting = true;
         centralStorage.setInspector(inspector.inspector, inspector);
+        centralStorage.setProperty(property);
     }
 
     function submitPropertyInspectionResultAndGenerate(
@@ -116,7 +131,9 @@ contract Insurance {
         uint _protection,
         uint _propertyValue
     ) public onlyPropertyInspector {
-        AssuredLibrary.Property storage asset = propertyIds[_propertyId];
+        AssuredLibrary.Property memory asset = centralStorage.getProperty(
+            _propertyId
+        );
         AssuredLibrary.Inspectors memory inspector = centralStorage
             .getInspector(msg.sender);
         asset.assetLocation = _location;
@@ -144,13 +161,50 @@ contract Insurance {
         centralStorage.setInspector(inspector.inspector, inspector);
     }
 
+    function submitVehicleInspectionResultAndGenerate(
+        uint _vehicleId,
+        uint _safetyFeatures
+    ) public onlyVehicleInspector {
+        AssuredLibrary.Vehicle memory vehicle = centralStorage.getVehicle(
+            _vehicleId
+        );
+        AssuredLibrary.Inspectors memory inspector = centralStorage
+            .getInspector(msg.sender);
+
+        vehicle.safetyFeatures = _safetyFeatures;
+        vehicle.status = AssuredLibrary.InspectionStatus.inspected;
+
+        uint premium = AssuredLibrary.calculateVehicleInsurancePremium(
+            vehicle.vehicleType,
+            vehicle.vehicleAge,
+            vehicle.driverAge,
+            _safetyFeatures,
+            vehicle.vehicleValue,
+            vehicle.claimHistory
+        ); // call the function to calculate the premium
+        vehicle.premium = premium;
+        inspector.currentlyInspecting = false;
+        inspector.assetInspected++;
+
+        address recipient = inspector.inspector;
+
+        (bool success, ) = recipient.call{value: 35}("");
+        require(success, "Transfer failed.");
+        centralStorage.setInspector(inspector.inspector, inspector);
+        centralStorage.setVehicle(vehicle);
+    }
+
     function returnPropertyOwner(uint _assetId) public view returns (address) {
-        AssuredLibrary.Property storage newAsset = propertyIds[_assetId];
-        return newAsset.owner;
+        AssuredLibrary.Property memory asset = centralStorage.getProperty(
+            _assetId
+        );
+        return asset.owner;
     }
 
     function returnVehicleOwner(uint _assetId) public view returns (address) {
-        AssuredLibrary.Vehicle storage newAsset = vehicleIds[_assetId];
-        return newAsset.owner;
+        AssuredLibrary.Vehicle memory asset = centralStorage.getVehicle(
+            _assetId
+        );
+        return asset.owner;
     }
 }
