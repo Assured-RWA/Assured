@@ -172,8 +172,8 @@ contract Premium is Test {
         inspector.returnInspectorStatus(inspector1);
         vm.prank(inspector1);
         insurance.submitVehicleInspectionResultAndGenerate(2, 50);
-        insurance.returnPropertyOwner(1);
-        insurance.returnPropertyOwner(2);
+        insurance.returnVehicleOwner(1);
+        insurance.returnVehicleOwner(2);
 
         uint256 contractBalance1 = address(contractAddress).balance;
         uint256 inspectorBalance1 = address(inspector1).balance;
