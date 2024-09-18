@@ -156,6 +156,7 @@ contract Insurance {
         (bool success, ) = recipient.call{value: 75}("");
         require(success, "Transfer failed.");
         centralStorage.setInspector(inspector.inspector, inspector);
+        centralStorage.setProperty(asset);
     }
 
     function submitVehicleInspectionResultAndGenerate(
@@ -191,6 +192,50 @@ contract Insurance {
         centralStorage.setVehicle(vehicle);
     }
 
+    function payPropertyInsurance(uint _propertyId) public payable {
+        AssuredLibrary.Property memory asset = centralStorage.getProperty(
+            _propertyId
+        );
+        // require(msg.value == asset.premium, "Insufficient funds.");
+        require(!asset.paid, "not expired");
+
+        asset.paid = true;
+        centralStorage.setProperty(asset);
+    }
+
+    function payVehicleInsurance(uint _vehicle) public payable {
+        AssuredLibrary.Vehicle memory asset = centralStorage.getVehicle(
+            _vehicle
+        );
+        // require(msg.value == asset.premium, "Insufficient funds.");
+        require(!asset.paid, "not expired");
+
+        asset.paid = true;
+        centralStorage.setVehicle(asset);
+    }
+
+    function getPropertyPremium(uint _propertyId) public view returns (uint) {
+        AssuredLibrary.Property memory asset = centralStorage.getProperty(
+            _propertyId
+        );
+        require(
+            asset.owner == returnPropertyOwner(_propertyId),
+            "Not your asset"
+        );
+        return asset.premium;
+    }
+
+    function getVehiclePremium(uint _vehicleId) public view returns (uint) {
+        AssuredLibrary.Vehicle memory asset = centralStorage.getVehicle(
+            _vehicleId
+        );
+        require(
+            asset.owner == returnVehicleOwner(_vehicleId),
+            "Not your asset"
+        );
+        return asset.premium;
+    }
+
     function returnPropertyOwner(uint _assetId) public view returns (address) {
         AssuredLibrary.Property memory asset = centralStorage.getProperty(
             _assetId
@@ -203,5 +248,9 @@ contract Insurance {
             _assetId
         );
         return asset.owner;
+    }
+
+    function returnDaoAddress() public view returns (address) {
+        return centralStorage.returnDaoAddress();
     }
 }

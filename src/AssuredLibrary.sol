@@ -32,6 +32,7 @@ library AssuredLibrary {
         uint propertyValue;
         uint premium;
         string addr;
+        bool paid;
     }
 
     struct Vehicle {
@@ -47,6 +48,7 @@ library AssuredLibrary {
         uint claimHistory;
         uint driverAge;
         string ownersAddress;
+        bool paid;
     }
 
     function calculatePropertyInsurancePremium(
