@@ -196,7 +196,7 @@ contract Insurance {
         AssuredLibrary.Property memory asset = centralStorage.getProperty(
             _propertyId
         );
-        // require(msg.value == asset.premium, "Insufficient funds.");
+        require(msg.value == asset.premium, "Insufficient funds.");
         require(!asset.paid, "not expired");
 
         asset.paid = true;
@@ -207,7 +207,7 @@ contract Insurance {
         AssuredLibrary.Vehicle memory asset = centralStorage.getVehicle(
             _vehicle
         );
-        // require(msg.value == asset.premium, "Insufficient funds.");
+        require(msg.value == asset.premium, "Insufficient funds.");
         require(!asset.paid, "not expired");
 
         asset.paid = true;
