@@ -102,4 +102,8 @@ contract CentralStorage {
     function pushVehicle(AssuredLibrary.Vehicle memory _vehicle) public {
         pendingVehicles.push(_vehicle);
     }
+
+    function returnDaoAddress() public view returns (address) {
+        return daoAddress;
+    }
 }

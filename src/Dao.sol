@@ -4,4 +4,6 @@ pragma solidity ^0.8.0;
 import "./AssuredLibrary.sol";
 import "./CentralStorage.sol";
 
-contract Dao {}
+contract Dao {
+    receive() external payable {}
+}
