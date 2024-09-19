@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.0;
+pragma solidity ^0.8.26;
 import "./AssuredLibrary.sol";
 
 contract CentralStorage {
@@ -27,7 +27,8 @@ contract CentralStorage {
 
     function onlyDao() public view returns (address, address) {
         // require(msg.sender == daoAddress, "Only Owner can Perform this Action");
-        return (tx.origin, msg.sender);
+        // return (tx.origin, msg.sender);
+        return(msg.sender, msg.sender);
     }
 
     // Function to set data

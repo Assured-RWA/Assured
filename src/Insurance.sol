@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.0;
+pragma solidity ^0.8.26;
 
 import "./AssuredLibrary.sol";
 import "./CentralStorage.sol";
@@ -15,7 +15,7 @@ contract Insurance {
         centralStorage = CentralStorage(_centralStorage);
     }
 
-    modifier onlyPropertyInspector() {
+    modifier onlyPropertyInspector {
         AssuredLibrary.Inspectors memory inspector = centralStorage
             .getInspector(msg.sender);
         require(inspector.valid, "you are Not an Inspector");
@@ -23,7 +23,7 @@ contract Insurance {
         _;
     }
 
-    modifier onlyVehicleInspector() {
+    modifier onlyVehicleInspector {
         AssuredLibrary.Inspectors memory inspector = centralStorage
             .getInspector(msg.sender);
         require(inspector.valid, "you are Not an Inspector");
@@ -83,7 +83,7 @@ contract Insurance {
         return true;
     }
 
-    function inspectAVehicle(uint _vehicleId) public onlyVehicleInspector {
+    function inspectAVehicle(uint256 _vehicleId) public onlyVehicleInspector {
         AssuredLibrary.Vehicle memory vehicle = centralStorage.getVehicle(
             _vehicleId
         );
@@ -151,10 +151,10 @@ contract Insurance {
         inspector.currentlyInspecting = false;
         inspector.assetInspected++;
 
-        address recipient = inspector.inspector;
+        // address recipient = inspector.inspector;
 
-        (bool success, ) = recipient.call{value: 75}("");
-        require(success, "Transfer failed.");
+        // (bool success, ) = recipient.call{value: 75}("");
+        // require(success, "Transfer failed.");
         centralStorage.setInspector(inspector.inspector, inspector);
         centralStorage.setProperty(asset);
     }
@@ -184,10 +184,10 @@ contract Insurance {
         inspector.currentlyInspecting = false;
         inspector.assetInspected++;
 
-        address recipient = inspector.inspector;
+        // address recipient = inspector.inspector;
 
-        (bool success, ) = recipient.call{value: 35}("");
-        require(success, "Transfer failed.");
+        // (bool success, ) = recipient.call{value: 35}("");
+        // require(success, "Transfer failed.");
         centralStorage.setInspector(inspector.inspector, inspector);
         centralStorage.setVehicle(vehicle);
     }
