@@ -17,7 +17,7 @@ library InspectorObject {
     struct InspectorDTO {
         address user;
         bytes name;
-        bytes[] documents;
+        bytes[3] documents;
         bytes location;
     }
     // struct Inspectors {
