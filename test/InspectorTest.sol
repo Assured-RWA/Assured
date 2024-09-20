@@ -14,6 +14,27 @@ contract InspectorTest is Test {
     }
 
     function testRegisterInspector() external view {
+        InspectorObject.InspectorDTO memory inspectorDTO = createInspector();
+
+        uint256 inspectorId = inspector.registerInspector(inspectorDTO);
+        assertEq(inspectorId, 1);
+    }
+
+    function testRegisterMoreThanOneInspector() external view {
+        InspectorObject.InspectorDTO memory inspectorDTO = createInspector();
+
+        InspectorObject.InspectorDTO memory secondInspectorDTO = createInspector();
+        inspectorDTO.name = bytes("Samuel");
+
+        inspector.registerInspector(inspectorDTO);
+        uint256 inspectorId = inspector.registerInspector(secondInspectorDTO);
+
+        assertEq(inspectorId, 2);
+        uint256[] memory allInspectors = inspector.getAllInspectors();
+        assertEq(2, allInspectors.length);
+    }
+
+    function createInspector() private pure returns(InspectorObject.InspectorDTO memory) {
         address user = address(0xa);
         bytes memory name = bytes("Whitewizardd");
         bytes[3] memory documents;
@@ -28,8 +49,7 @@ contract InspectorTest is Test {
         inspectorDTO.name = name;
         inspectorDTO.user = user;
 
-        uint256 inspectorId = inspector.registerInspector(inspectorDTO);
-        assertEq(inspectorId, 1);
+        return inspectorDTO;
     }
 
 

@@ -5,11 +5,15 @@ import {InspectorObject} from "src/inspector/libraries/InspectorObjectConstant.s
 
 contract Inspector {
 
-    uint256[] public inspectors;
+    uint256[] private inspectors;
     function registerInspector(InspectorObject.InspectorDTO memory inspectorDTO) external pure returns(uint256 inspectorId_) {
-        return 0;
+        return 1;
     }
     function convertToLowerCase(string memory input) external pure returns (string memory) {
         return InspectorObject.convertToLowerCase(input);
+    }
+
+    function getAllInspectors() external view returns(uint256[] memory) {
+        return inspectors;
     }
 }
