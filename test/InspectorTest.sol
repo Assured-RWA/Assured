@@ -25,7 +25,12 @@ contract InspectorTest is Test {
         inspectorDTO.name = name;
         inspectorDTO.user = user;
 
-        inspector.registerInspector(inspectorDTO);
+        uint256 inspectorId = inspector.registerInspector(inspectorDTO);
+
+        uint256 allInspectors = inspector.inspectors();
+
+        assertEq(inspectorId, 1);
+        assertEq(allInspectors, 1);
     }
 
 
