@@ -23,7 +23,12 @@ library InspectorLogic {
         _inspector[allInspectors.length + 1] = inspector;
         return allInspectors.length;
     }
-    function checkDuplicateAddress(address inspectorAddress) private returns(bool result) {
-        result;
-    } 
+
+    function checkDuplicateAddress(mapping(address => bool) storage existingAddress, address inspectorAddress)
+        private
+        view
+        returns (bool result)
+    {
+        result = existingAddress[inspectorAddress];
+    }
 }
