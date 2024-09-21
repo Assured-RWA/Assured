@@ -45,6 +45,16 @@ contract InspectorTest is Test {
         inspector.registerInspector(secondInspectorDTO);
     }
 
+    function testThatAlreadyExistingNameCannotRegisterAgain() external {
+        InspectorObject.InspectorDTO memory inspectorDTO = createInspector();
+        InspectorObject.InspectorDTO memory secondInspectorDTO = createInspector();
+        secondInspectorDTO.user = address(0xee);
+
+        inspector.registerInspector(inspectorDTO);
+        vm.expectRevert(abi.encodeWithSignature("DuplicateUsernameError(bytes)", inspectorDTO.user));
+        inspector.registerInspector(secondInspectorDTO);
+    }
+
     function createInspector() private pure returns (InspectorObject.InspectorDTO memory) {
         address user = address(0xa);
         bytes memory name = bytes("Whitewizardd");
