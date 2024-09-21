@@ -22,7 +22,7 @@ contract Inspector {
     {
         bool duplicateAddress = InspectorLogic.checkDuplicateAddress(alreadyExistingAddress, inspectorDTO.user);
         if (duplicateAddress) revert InspectorErrors.DuplicateAddressError(inspectorDTO.user);
-        
+        (bool result, ) = InspectorLogic.checkDuplicateName(alreadyExistingName, inspectorDTO.name);
         inspectorId_ = InspectorLogic.registerInspector(allInspectors, inspectorMapping, inspector, inspectorDTO);
         alreadyExistingAddress[inspectorDTO.user] = true;
     }
