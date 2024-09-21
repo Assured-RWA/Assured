@@ -30,7 +30,7 @@ contract InspectorTest is Test {
         uint256 inspectorId = inspector.registerInspector(secondInspectorDTO);
 
         assertEq(inspectorId, 2);
-        uint256[] memory allInspectors = inspector.getAllInspectors();
+        InspectorObject.Inspector[] memory allInspectors = inspector.getAllInspectors();
         assertEq(2, allInspectors.length);
     }
 
