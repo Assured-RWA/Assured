@@ -3,6 +3,7 @@ pragma solidity ^0.8.26;
 
 import {InspectorObject} from "src/inspector/libraries/InspectorObjectConstant.sol";
 import {InspectorLogic} from "src/inspector/libraries/InspectorLogic.sol";
+import {InspectorErrors} from "src/inspector/libraries/InspectorErrors.sol";
 
 contract Inspector {
     mapping(uint256 => InspectorObject.Inspector) private inspector;
@@ -20,7 +21,7 @@ contract Inspector {
         returns (uint256 inspectorId_)
     {
         bool result = InspectorLogic.checkDuplicateAddress(alreadyExistingAddress, inspectorDTO.user);
-        if (result) revert();
+        if (result) revert InspectorErrors.DuplicateAddressError(inspectorDTO.user);
         inspectorId_ = InspectorLogic.registerInspector(allInspectors, inspectorMapping, inspector, inspectorDTO);
         alreadyExistingAddress[inspectorDTO.user] = true;
     }
