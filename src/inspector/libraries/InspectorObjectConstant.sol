@@ -12,13 +12,15 @@ library InspectorObject {
         // uint256 verificationPeriod;
         bool isVerified;
         uint256 verificationDate;
+        Continent continent;
     }
 
     struct InspectorDTO {
         address user;
-        bytes name;
+        string name;
         bytes[3] documents;
         bytes location;
+        Continent continent;
     }
 
     enum Continent {
@@ -42,23 +44,5 @@ library InspectorObject {
         pending,
         inspecting,
         inspected
-    }
-
-    function convertStringToBytes(string memory input) internal pure returns (bytes memory) {
-        return bytes(input);
-    }
-
-    function convertToLowerCase(string memory input) internal pure returns (string memory result) {
-        bytes memory stringBytes = bytes(input);
-        bytes memory lowerCaseBytes = new bytes(stringBytes.length);
-        for (uint256 i = 0; i < stringBytes.length; i++) {
-            // Convert to lowercase if character is uppercase
-            if (stringBytes[i] >= 0x41 && stringBytes[i] <= 0x5A) {
-                lowerCaseBytes[i] = bytes1(uint8(stringBytes[i]) + 32);
-            } else {
-                lowerCaseBytes[i] = stringBytes[i];
-            }
-        }
-        result = string(lowerCaseBytes);
     }
 }

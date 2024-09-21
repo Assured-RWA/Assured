@@ -20,14 +20,11 @@ contract Inspector {
         external
         returns (uint256 inspectorId_)
     {
-        bool result = InspectorLogic.checkDuplicateAddress(alreadyExistingAddress, inspectorDTO.user);
-        if (result) revert InspectorErrors.DuplicateAddressError(inspectorDTO.user);
+        bool duplicateAddress = InspectorLogic.checkDuplicateAddress(alreadyExistingAddress, inspectorDTO.user);
+        if (duplicateAddress) revert InspectorErrors.DuplicateAddressError(inspectorDTO.user);
+        
         inspectorId_ = InspectorLogic.registerInspector(allInspectors, inspectorMapping, inspector, inspectorDTO);
         alreadyExistingAddress[inspectorDTO.user] = true;
-    }
-
-    function convertToLowerCase(string memory input) external pure returns (string memory) {
-        return InspectorObject.convertToLowerCase(input);
     }
 
     function getAllInspectors() external view returns (InspectorObject.Inspector[] memory) {

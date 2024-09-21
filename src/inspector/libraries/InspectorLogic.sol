@@ -14,9 +14,10 @@ library InspectorLogic {
 
         inspector.documents = inspectorDTO.documents;
         inspector.location = inspectorDTO.location;
-        inspector.name = inspectorDTO.name;
+        inspector.name = bytes(inspectorDTO.name);
         inspector.inspectorAddress = inspectorDTO.user;
         inspector.registrationPeriod = block.timestamp;
+        inspector.continent = inspectorDTO.continent;
 
         inspectorMapping[inspectorDTO.user] = inspector;
         allInspectors.push(inspector);
@@ -30,5 +31,23 @@ library InspectorLogic {
         returns (bool result)
     {
         result = existingAddress[inspectorAddress];
+    }
+
+    function convertToLowerCase(string memory input) internal pure returns (string memory result) {
+        bytes memory stringBytes = bytes(input);
+        bytes memory lowerCaseBytes = new bytes(stringBytes.length);
+        for (uint256 i = 0; i < stringBytes.length; i++) {
+            // Convert to lowercase if character is uppercase
+            if (stringBytes[i] >= 0x41 && stringBytes[i] <= 0x5A) {
+                lowerCaseBytes[i] = bytes1(uint8(stringBytes[i]) + 32);
+            } else {
+                lowerCaseBytes[i] = stringBytes[i];
+            }
+        }
+        result = string(lowerCaseBytes);
+    }
+
+    function convertStringToBytes(string memory input) internal pure returns (bytes memory) {
+        return bytes(input);
     }
 }
