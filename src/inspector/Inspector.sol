@@ -2,6 +2,7 @@
 pragma solidity ^0.8.26;
 
 import {InspectorObject} from "src/inspector/libraries/InspectorObjectConstant.sol";
+import {InspectorLogic} from "src/inspector/libraries/InspectorLogic.sol";
 
 contract Inspector {
     mapping(uint256 => InspectorObject.Inspector ) private inspector;
