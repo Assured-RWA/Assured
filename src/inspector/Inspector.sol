@@ -7,7 +7,7 @@ import {InspectorLogic} from "src/inspector/libraries/InspectorLogic.sol";
 contract Inspector {
     mapping(uint256 => InspectorObject.Inspector) private inspector;
     mapping(address => InspectorObject.Inspector) private inspectorMapping;
-    mapping(string => bool) private alreadyExistingName;
+    mapping(bytes => bool) private alreadyExistingName;
     mapping(address => bool) private alreadyExistingAddress;
     mapping(InspectorObject.Continent => Inspector[]) private inspectorRegion;
     InspectorObject.Inspector[] private pendingInspector;

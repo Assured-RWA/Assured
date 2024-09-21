@@ -8,7 +8,7 @@ import {InspectorObject} from "src/inspector/libraries/InspectorObjectConstant.s
 contract InspectorTest is Test {
     Inspector private inspector = new Inspector();
 
-    function testConvertStringsToLowerCase() external  {
+    function testConvertStringsToLowerCase() external {
         console.log("checking the result on the console");
         string memory result = inspector.convertToLowerCase("Oladele");
         assertEq(result, "oladele");
@@ -33,6 +33,15 @@ contract InspectorTest is Test {
         assertEq(inspectorId, 2);
         InspectorObject.Inspector[] memory allInspectors = inspector.getAllInspectors();
         assertEq(2, allInspectors.length);
+    }
+
+    function testThatAlreadyExistingAddressCannotRegisterAgain() external {
+        InspectorObject.InspectorDTO memory inspectorDTO = createInspector();
+        InspectorObject.InspectorDTO memory secondInspectorDTO = createInspector();
+
+        inspector.registerInspector(inspectorDTO);
+        vm.expectRevert();
+        inspector.registerInspector(secondInspectorDTO);
     }
 
     function createInspector() private pure returns (InspectorObject.InspectorDTO memory) {
