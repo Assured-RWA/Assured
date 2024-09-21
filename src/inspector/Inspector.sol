@@ -5,8 +5,8 @@ import {InspectorObject} from "src/inspector/libraries/InspectorObjectConstant.s
 import {InspectorLogic} from "src/inspector/libraries/InspectorLogic.sol";
 
 contract Inspector {
-    mapping(uint256 => InspectorObject.Inspector ) private inspector;
-    mapping(address => InspectorObject.Inspector ) private inspectorMapping;
+    mapping(uint256 => InspectorObject.Inspector) private inspector;
+    mapping(address => InspectorObject.Inspector) private inspectorMapping;
     mapping(string => bool) private alreadyExistingName;
     mapping(address => bool) private alreadyExistingAddress;
     mapping(InspectorObject.Continent => Inspector[]) private inspectorRegion;
@@ -15,15 +15,20 @@ contract Inspector {
     InspectorObject.Inspector[] private blacklistedInspector;
     InspectorObject.Inspector[] private allInspectors;
 
-    function registerInspector(InspectorObject.InspectorDTO memory inspectorDTO) external view returns(uint256 inspectorId_) {
-        
+    function registerInspector(InspectorObject.InspectorDTO memory inspectorDTO)
+        external
+        view
+        returns (uint256 inspectorId_)
+    {
+        // allInspectors;
         return 1;
     }
+
     function convertToLowerCase(string memory input) external pure returns (string memory) {
         return InspectorObject.convertToLowerCase(input);
     }
 
-    function getAllInspectors() external view returns(InspectorObject.Inspector[] memory) {
+    function getAllInspectors() external view returns (InspectorObject.Inspector[] memory) {
         return allInspectors;
     }
 }

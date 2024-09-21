@@ -3,10 +3,11 @@ pragma solidity ^0.8.26;
 
 import {Test, console} from "lib/forge-std/src/Test.sol";
 import {Inspector} from "src/inspector/Inspector.sol";
-import { InspectorObject } from "src/inspector/libraries/InspectorObjectConstant.sol";
+import {InspectorObject} from "src/inspector/libraries/InspectorObjectConstant.sol";
 
 contract InspectorTest is Test {
     Inspector private inspector = new Inspector();
+
     function testConvertStringsToLowerCase() external view {
         console.log("checking the result on the console");
         string memory result = inspector.convertToLowerCase("Oladele");
@@ -34,7 +35,7 @@ contract InspectorTest is Test {
         assertEq(2, allInspectors.length);
     }
 
-    function createInspector() private pure returns(InspectorObject.InspectorDTO memory) {
+    function createInspector() private pure returns (InspectorObject.InspectorDTO memory) {
         address user = address(0xa);
         bytes memory name = bytes("Whitewizardd");
         bytes[3] memory documents;
@@ -51,6 +52,4 @@ contract InspectorTest is Test {
 
         return inspectorDTO;
     }
-
-
 }

@@ -22,7 +22,10 @@ library InspectorObject {
     }
 
     enum Continent {
-        AFRICA, EUROPE, ASIA, ANTARTICA
+        AFRICA,
+        EUROPE,
+        ASIA,
+        ANTARTICA
     }
     // struct Inspectors {
     //     address inspector;
