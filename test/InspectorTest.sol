@@ -25,7 +25,7 @@ contract InspectorTest is Test {
         InspectorObject.InspectorDTO memory inspectorDTO = createInspector();
 
         InspectorObject.InspectorDTO memory secondInspectorDTO = createInspector();
-        inspectorDTO.name = bytes("Samuel");
+        inspectorDTO.name = "Samuel";
         inspectorDTO.user = address(0xb);
 
         inspector.registerInspector(inspectorDTO);
@@ -57,7 +57,7 @@ contract InspectorTest is Test {
 
     function createInspector() private pure returns (InspectorObject.InspectorDTO memory) {
         address user = address(0xa);
-        bytes memory name = bytes("Whitewizardd");
+        // bytes memory name = bytes("Whitewizardd");
         bytes[3] memory documents;
         documents[0] = bytes("1");
         documents[1] = bytes("2");
@@ -67,7 +67,7 @@ contract InspectorTest is Test {
         InspectorObject.InspectorDTO memory inspectorDTO;
         inspectorDTO.documents = documents;
         inspectorDTO.location = location;
-        inspectorDTO.name = name;
+        inspectorDTO.name = "WhietWizardd";
         inspectorDTO.user = user;
 
         return inspectorDTO;
