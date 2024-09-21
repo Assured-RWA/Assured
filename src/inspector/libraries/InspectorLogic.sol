@@ -23,4 +23,7 @@ library InspectorLogic {
         _inspector[allInspectors.length + 1] = inspector;
         return allInspectors.length;
     }
+    function checkDuplicateAddress(address inspectorAddress) private returns(bool result) {
+        result;
+    } 
 }
