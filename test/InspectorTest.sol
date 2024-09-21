@@ -41,7 +41,7 @@ contract InspectorTest is Test {
         InspectorObject.InspectorDTO memory secondInspectorDTO = createInspector();
 
         inspector.registerInspector(inspectorDTO);
-        vm.expectRevert();
+        vm.expectRevert(abi.encodeWithSignature("DuplicateAddressError(address)", secondInspectorDTO.user));
         inspector.registerInspector(secondInspectorDTO);
     }
 
