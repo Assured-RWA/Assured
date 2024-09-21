@@ -8,20 +8,20 @@ import {InspectorObject} from "src/inspector/libraries/InspectorObjectConstant.s
 contract InspectorTest is Test {
     Inspector private inspector = new Inspector();
 
-    function testConvertStringsToLowerCase() external view {
+    function testConvertStringsToLowerCase() external  {
         console.log("checking the result on the console");
         string memory result = inspector.convertToLowerCase("Oladele");
         assertEq(result, "oladele");
     }
 
-    function testRegisterInspector() external view {
+    function testRegisterInspector() external {
         InspectorObject.InspectorDTO memory inspectorDTO = createInspector();
 
         uint256 inspectorId = inspector.registerInspector(inspectorDTO);
         assertEq(inspectorId, 1);
     }
 
-    function testRegisterMoreThanOneInspector() external view {
+    function testRegisterMoreThanOneInspector() external {
         InspectorObject.InspectorDTO memory inspectorDTO = createInspector();
 
         InspectorObject.InspectorDTO memory secondInspectorDTO = createInspector();

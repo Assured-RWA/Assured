@@ -6,7 +6,8 @@ import {InspectorObject} from "src/inspector/libraries/InspectorObjectConstant.s
 library InspectorLogic {
     function registerInspector(
         InspectorObject.Inspector[] storage allInspectors,
-        mapping(address => InspectorObject.Inspector) storage pendingInspector,
+        mapping(address => InspectorObject.Inspector) storage inspectorMapping,
+        mapping(uint256 => InspectorObject.Inspector) storage _inspector,
         InspectorObject.InspectorDTO memory inspectorDTO
     ) internal returns (uint256) {
         InspectorObject.Inspector memory inspector;
@@ -17,8 +18,9 @@ library InspectorLogic {
         inspector.inspectorAddress = inspectorDTO.user;
         inspector.registrationPeriod = block.timestamp;
 
-        pendingInspector[inspectorDTO.user] = inspector;
+        inspectorMapping[inspectorDTO.user] = inspector;
         allInspectors.push(inspector);
+        _inspector[allInspectors.length + 1] = inspector;
         return allInspectors.length;
     }
 }

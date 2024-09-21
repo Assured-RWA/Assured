@@ -17,11 +17,9 @@ contract Inspector {
 
     function registerInspector(InspectorObject.InspectorDTO memory inspectorDTO)
         external
-        view
         returns (uint256 inspectorId_)
     {
-        // allInspectors;
-        return 1;
+        inspectorId_ = InspectorLogic.registerInspector(allInspectors, inspectorMapping, inspector, inspectorDTO);
     }
 
     function convertToLowerCase(string memory input) external pure returns (string memory) {
