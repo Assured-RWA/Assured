@@ -26,6 +26,7 @@ contract InspectorTest is Test {
 
         InspectorObject.InspectorDTO memory secondInspectorDTO = createInspector();
         inspectorDTO.name = bytes("Samuel");
+        inspectorDTO.user = address(0xb);
 
         inspector.registerInspector(inspectorDTO);
         uint256 inspectorId = inspector.registerInspector(secondInspectorDTO);

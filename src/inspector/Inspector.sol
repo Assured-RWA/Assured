@@ -19,7 +19,10 @@ contract Inspector {
         external
         returns (uint256 inspectorId_)
     {
+        bool result = InspectorLogic.checkDuplicateAddress(alreadyExistingAddress, inspectorDTO.user);
+        if (result) revert();
         inspectorId_ = InspectorLogic.registerInspector(allInspectors, inspectorMapping, inspector, inspectorDTO);
+        alreadyExistingAddress[inspectorDTO.user] = true;
     }
 
     function convertToLowerCase(string memory input) external pure returns (string memory) {

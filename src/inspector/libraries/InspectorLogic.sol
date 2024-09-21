@@ -25,7 +25,7 @@ library InspectorLogic {
     }
 
     function checkDuplicateAddress(mapping(address => bool) storage existingAddress, address inspectorAddress)
-        private
+        internal
         view
         returns (bool result)
     {
