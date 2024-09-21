@@ -20,6 +20,10 @@ library InspectorObject {
         bytes[3] documents;
         bytes location;
     }
+
+    enum Continent {
+        AFRICA, EUROPE, ASIA, ANTARTICA
+    }
     // struct Inspectors {
     //     address inspector;
     //     bool valid;
