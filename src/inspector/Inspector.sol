@@ -10,7 +10,7 @@ contract Inspector {
     mapping(address => InspectorObject.Inspector) private inspectorMapping;
     mapping(bytes => bool) private alreadyExistingName;
     mapping(address => bool) private alreadyExistingAddress;
-    mapping(InspectorObject.Continent => Inspector[]) private inspectorRegion;
+    mapping(InspectorObject.Continent => InspectorObject.Inspector[]) private inspectorRegion;
     mapping(InspectorObject.InspectorSpecialization => InspectorObject.Inspector[]) private specializationToInspector;
     mapping(
         InspectorObject.Continent => mapping(InspectorObject.InspectorSpecialization => InspectorObject.Inspector[])
