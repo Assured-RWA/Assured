@@ -34,7 +34,11 @@ library InspectorLogic {
         return existingAddress[inspectorAddress];
     }
 
-    function checkDuplicateName(mapping(bytes => bool) storage existingName, string memory name) internal view returns (bool result, bytes memory){
+    function checkDuplicateName(mapping(bytes => bool) storage existingName, string memory name)
+        internal
+        view
+        returns (bool result, bytes memory)
+    {
         bytes memory convertedName = convertToLowerCase(name);
         return (result = existingName[convertedName], convertedName);
     }

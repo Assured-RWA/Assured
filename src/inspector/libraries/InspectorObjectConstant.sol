@@ -41,7 +41,7 @@ library InspectorObject {
     // }
 
     enum InspectorStatus {
-        REVIEW, 
+        REVIEW,
         APPROVED,
         BLACKLISTED
     }
