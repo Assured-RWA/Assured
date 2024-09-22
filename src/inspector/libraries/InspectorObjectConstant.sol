@@ -9,7 +9,6 @@ library InspectorObject {
         bytes location;
         bytes[3] documents;
         uint256 registrationPeriod;
-        // uint256 verificationPeriod;
         bool isVerified;
         uint256 verificationDate;
         Continent continent;
@@ -30,20 +29,17 @@ library InspectorObject {
         ASIA,
         ANTARTICA
     }
-    // struct Inspectors {
-    //     address inspector;
-    //     bool valid;
-    //     uint8 assetType;
-    //     uint assetInspected;
-    //     bool currentlyInspecting;
-    //     bool status;
-    //     uint inspectorId;
-    // }
 
     enum InspectorStatus {
         REVIEW,
         APPROVED,
         BLACKLISTED
+    }
+
+    enum InspectorSpecialization {
+        NIL, 
+        VEHICLE,
+        PROPERTY
     }
 
     enum InspectionStatus {
