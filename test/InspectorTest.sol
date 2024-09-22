@@ -50,7 +50,6 @@ contract InspectorTest is Test {
 
         inspector.registerInspector(inspectorDTO);
         vm.expectRevert(abi.encodeWithSignature("DuplicateUsernameError(bytes)", bytes(inspectorDTO.name)));
-        // vm.expectRevert();
         inspector.registerInspector(secondInspectorDTO);
     }
 

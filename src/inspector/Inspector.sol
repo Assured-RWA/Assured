@@ -16,11 +16,7 @@ contract Inspector {
         InspectorObject.Continent => mapping(InspectorObject.InspectorSpecialization => InspectorObject.Inspector[])
     ) private regionToSpecializationToInspectors;
     uint256 public inspectorCount;
-    // InspectorObject.Inspector[] private pendingInspector;
-    // InspectorObject.Inspector[] private approvedInspector;
-    // InspectorObject.Inspector[] private blacklistedInspector;
-    // InspectorObject.Inspector[] private allInspectors;
-
+    
     function registerInspector(InspectorObject.InspectorDTO memory inspectorDTO)
         external
         returns (uint256 inspectorId_)
