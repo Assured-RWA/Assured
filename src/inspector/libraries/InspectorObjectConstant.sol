@@ -9,8 +9,8 @@ library InspectorObject {
         bytes location;
         bytes[3] documents;
         uint256 registrationPeriod;
-        bool isVerified;
         uint256 verificationDate;
+        bool isVerified;
         Continent continent;
         InspectorStatus inspectorStatus;
         InspectorSpecialization specialization;
