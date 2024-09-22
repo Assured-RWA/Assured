@@ -13,6 +13,7 @@ library InspectorObject {
         uint256 verificationDate;
         Continent continent;
         InspectorStatus inspectorStatus;
+        InspectorSpecialization specialization;
     }
 
     struct InspectorDTO {
@@ -21,6 +22,7 @@ library InspectorObject {
         bytes[3] documents;
         bytes location;
         Continent continent;
+        InspectorSpecialization specialization;
     }
 
     enum Continent {

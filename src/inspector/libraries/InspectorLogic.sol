@@ -19,6 +19,7 @@ library InspectorLogic {
         inspector.registrationPeriod = block.timestamp;
         inspector.continent = inspectorDTO.continent;
         inspector.inspectorStatus = InspectorObject.InspectorStatus.REVIEW;
+        inspector.specialization = inspectorDTO.specialization;
 
         inspectorMapping[inspectorDTO.user] = inspector;
         allInspectors.push(inspector);

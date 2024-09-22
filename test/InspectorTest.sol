@@ -69,6 +69,7 @@ contract InspectorTest is Test {
         inspectorDTO.name = "WhietWizardd";
         inspectorDTO.user = user;
         inspectorDTO.continent = InspectorObject.Continent.AFRICA;
+        inspectorDTO.specialization = InspectorObject.InspectorSpecialization.VEHICLE;
 
         return inspectorDTO;
     }
