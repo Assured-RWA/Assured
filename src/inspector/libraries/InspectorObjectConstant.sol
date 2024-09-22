@@ -39,7 +39,7 @@ library InspectorObject {
     }
 
     enum InspectorSpecialization {
-        NIL, 
+        NIL,
         VEHICLE,
         PROPERTY
     }
