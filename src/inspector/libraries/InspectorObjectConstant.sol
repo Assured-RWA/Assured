@@ -39,6 +39,12 @@ library InspectorObject {
     //     uint inspectorId;
     // }
 
+    enum InspectorStatus {
+        REVIEW, 
+        APPROVED,
+        BLACKLISTED
+    }
+
     enum InspectionStatus {
         none,
         pending,
