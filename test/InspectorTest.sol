@@ -68,6 +68,7 @@ contract InspectorTest is Test {
         inspectorDTO.location = location;
         inspectorDTO.name = "WhietWizardd";
         inspectorDTO.user = user;
+        inspectorDTO.continent = InspectorObject.Continent.AFRICA;
 
         return inspectorDTO;
     }
