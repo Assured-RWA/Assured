@@ -11,6 +11,7 @@ contract Inspector {
     mapping(bytes => bool) private alreadyExistingName;
     mapping(address => bool) private alreadyExistingAddress;
     mapping(InspectorObject.Continent => Inspector[]) private inspectorRegion;
+    mapping(InspectorObject.InspectorSpecialization => address[]) private specializationToInspector;
     InspectorObject.Inspector[] private pendingInspector;
     InspectorObject.Inspector[] private approvedInspector;
     InspectorObject.Inspector[] private blacklistedInspector;
