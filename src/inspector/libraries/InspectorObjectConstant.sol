@@ -13,6 +13,7 @@ library InspectorObject {
         bool isVerified;
         uint256 verificationDate;
         Continent continent;
+        InspectorStatus inspectorStatus;
     }
 
     struct InspectorDTO {
