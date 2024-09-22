@@ -5,13 +5,13 @@ import {InspectorObject} from "src/inspector/libraries/InspectorObjectConstant.s
 
 library InspectorLogic {
     function registerInspector(
-        InspectorObject.Inspector[] storage allInspectors,
+        uint256 inspectorCount,
         mapping(address => InspectorObject.Inspector) storage inspectorMapping,
         mapping(uint256 => InspectorObject.Inspector) storage _inspector,
         InspectorObject.InspectorDTO memory inspectorDTO
     ) internal returns (uint256) {
         InspectorObject.Inspector memory inspector;
-
+        inspector.id = inspectorCount;
         inspector.documents = inspectorDTO.documents;
         inspector.location = inspectorDTO.location;
         inspector.name = bytes(inspectorDTO.name);
@@ -22,9 +22,9 @@ library InspectorLogic {
         inspector.specialization = inspectorDTO.specialization;
 
         inspectorMapping[inspectorDTO.user] = inspector;
-        allInspectors.push(inspector);
-        _inspector[allInspectors.length + 1] = inspector;
-        return allInspectors.length;
+        _inspector[inspectorCount] = inspector;
+
+        return inspectorCount;
     }
 
     function checkDuplicateAddress(mapping(address => bool) storage existingAddress, address inspectorAddress)

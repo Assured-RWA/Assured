@@ -30,8 +30,8 @@ contract InspectorTest is Test {
         uint256 inspectorId = inspector.registerInspector(secondInspectorDTO);
 
         assertEq(inspectorId, 2);
-        InspectorObject.Inspector[] memory allInspectors = inspector.getAllInspectors();
-        assertEq(2, allInspectors.length);
+        uint256 inspectors_ = inspector.inspectorCount();
+        assertEq(2, inspectors_);
     }
 
     function testThatAlreadyExistingAddressCannotRegisterAgain() external {
