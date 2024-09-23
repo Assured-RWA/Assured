@@ -8,7 +8,7 @@ import {InspectorObject} from "src/inspector/libraries/InspectorObjectConstant.s
 contract InspectorTest is Test {
     Inspector private inspector = new Inspector();
 
-    function testConvertStringsToLowerCase() external {
+    function testConvertStringsToLowerCase() external pure {
         console.log("checking the result on the console");
     }
 
@@ -30,8 +30,8 @@ contract InspectorTest is Test {
         uint256 inspectorId = inspector.registerInspector(secondInspectorDTO);
 
         assertEq(inspectorId, 2);
-        InspectorObject.Inspector[] memory allInspectors = inspector.getAllInspectors();
-        assertEq(2, allInspectors.length);
+        uint256 inspectors_ = inspector.inspectorCount();
+        assertEq(2, inspectors_);
     }
 
     function testThatAlreadyExistingAddressCannotRegisterAgain() external {
@@ -50,9 +50,10 @@ contract InspectorTest is Test {
 
         inspector.registerInspector(inspectorDTO);
         vm.expectRevert(abi.encodeWithSignature("DuplicateUsernameError(bytes)", bytes(inspectorDTO.name)));
-        // vm.expectRevert();
         inspector.registerInspector(secondInspectorDTO);
     }
+
+    // function testThatAllInspectorRegistrationFieldDTOField
 
     function createInspector() private pure returns (InspectorObject.InspectorDTO memory) {
         address user = address(0xa);
@@ -68,6 +69,8 @@ contract InspectorTest is Test {
         inspectorDTO.location = location;
         inspectorDTO.name = "WhietWizardd";
         inspectorDTO.user = user;
+        inspectorDTO.continent = InspectorObject.Continent.AFRICA;
+        inspectorDTO.specialization = InspectorObject.InspectorSpecialization.VEHICLE;
 
         return inspectorDTO;
     }

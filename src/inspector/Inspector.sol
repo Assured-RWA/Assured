@@ -10,26 +10,24 @@ contract Inspector {
     mapping(address => InspectorObject.Inspector) private inspectorMapping;
     mapping(bytes => bool) private alreadyExistingName;
     mapping(address => bool) private alreadyExistingAddress;
-    mapping(InspectorObject.Continent => Inspector[]) private inspectorRegion;
-    InspectorObject.Inspector[] private pendingInspector;
-    InspectorObject.Inspector[] private approvedInspector;
-    InspectorObject.Inspector[] private blacklistedInspector;
-    InspectorObject.Inspector[] private allInspectors;
-
+    mapping(InspectorObject.Continent => InspectorObject.Inspector[]) private inspectorRegion;
+    mapping(InspectorObject.InspectorSpecialization => InspectorObject.Inspector[]) private specializationToInspector;
+    mapping(
+        InspectorObject.Continent => mapping(InspectorObject.InspectorSpecialization => InspectorObject.Inspector[])
+    ) private regionToSpecializationToInspectors;
+    uint256 public inspectorCount;
+    
     function registerInspector(InspectorObject.InspectorDTO memory inspectorDTO)
         external
         returns (uint256 inspectorId_)
     {
         bool duplicateAddress = InspectorLogic.checkDuplicateAddress(alreadyExistingAddress, inspectorDTO.user);
         if (duplicateAddress) revert InspectorErrors.DuplicateAddressError(inspectorDTO.user);
-        (bool result, bytes memory _name ) = InspectorLogic.checkDuplicateName(alreadyExistingName, inspectorDTO.name);
+        (bool result, bytes memory _name) = InspectorLogic.checkDuplicateName(alreadyExistingName, inspectorDTO.name);
         if (result) revert InspectorErrors.DuplicateUsernameError(bytes(inspectorDTO.name));
-        inspectorId_ = InspectorLogic.registerInspector(allInspectors, inspectorMapping, inspector, inspectorDTO);
+        inspectorCount = inspectorCount + 1 ;
+        inspectorId_ = InspectorLogic.registerInspector(inspectorCount, inspectorMapping, inspector, inspectorDTO);
         alreadyExistingAddress[inspectorDTO.user] = true;
         alreadyExistingName[_name] = true;
-    }
-
-    function getAllInspectors() external view returns (InspectorObject.Inspector[] memory) {
-        return allInspectors;
     }
 }
