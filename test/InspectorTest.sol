@@ -53,7 +53,7 @@ contract InspectorTest is Test {
         inspector.registerInspector(secondInspectorDTO);
     }
 
-    function testThatAllInspectorRegistrationFieldDTOField
+    // function testThatAllInspectorRegistrationFieldDTOField
 
     function createInspector() private pure returns (InspectorObject.InspectorDTO memory) {
         address user = address(0xa);
