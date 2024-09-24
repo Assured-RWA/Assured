@@ -6,7 +6,9 @@ import {InspectorObject} from "src/inspector/libraries/InspectorObjectConstant.s
 library InspectorLogic {
     function registerInspector(
         uint256 inspectorCount,
+        // mapping of an address to an inspector struct
         mapping(address => InspectorObject.Inspector) storage inspectorMapping,
+        // mapping of an id to an inspector struct
         mapping(uint256 => InspectorObject.Inspector) storage _inspector,
         InspectorObject.InspectorDTO memory inspectorDTO
     ) internal returns (uint256) {
