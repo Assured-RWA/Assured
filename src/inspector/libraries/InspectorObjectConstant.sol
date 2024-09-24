@@ -27,8 +27,10 @@ library InspectorObject {
 
     enum Continent {
         AFRICA,
-        EUROPE,
         ASIA,
+        EUROPE,
+        NORTHAMERICA,
+        SOUTHAMERICA,
         ANTARTICA
     }
 
