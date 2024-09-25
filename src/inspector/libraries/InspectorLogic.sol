@@ -59,4 +59,34 @@ library InspectorLogic {
         }
         result = lowerCaseBytes;
     }
+
+    function reviewInspector(
+        uint inspectorId,
+        mapping(uint256 => InspectorObject.Inspector) storage _inspector
+    ) internal view returns (InspectorObject.Inspector memory) {
+        return _inspector[inspectorId];
+    }
+
+    function approveInspector(
+        uint inspectorId,
+        mapping(uint256 => InspectorObject.Inspector) storage _inspector
+    ) internal returns (bool) {
+        _inspector[inspectorId].approved = true;
+        return true;
+    }
+
+    function suspendInspector(
+        uint inspectorId,
+        mapping(uint256 => InspectorObject.Inspector) storage _inspector
+    ) internal returns (bool) {
+        _inspector[inspectorId].approved = false;
+        return true;
+    }
+
+    function deleteInspector(
+        uint inspectorId,
+        mapping(uint256 => InspectorObject.Inspector) storage _inspector
+    ) public {
+        delete _inspector[inspectorId];
+    }
 }
