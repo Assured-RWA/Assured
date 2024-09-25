@@ -14,6 +14,7 @@ library InspectorObject {
         Continent continent;
         InspectorStatus inspectorStatus;
         InspectorSpecialization specialization;
+        bool approved;
     }
 
     struct InspectorDTO {
