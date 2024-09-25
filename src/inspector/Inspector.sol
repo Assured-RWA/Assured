@@ -45,4 +45,16 @@ contract Inspector {
         alreadyExistingAddress[inspectorDTO.user] = true;
         alreadyExistingName[_name] = true;
     }
+
+    function approveInspector(uint inspectorId) external returns (bool) {
+        return InspectorLogic.approveInspector(inspectorId, inspector);
+    }
+
+    function suspendInspector(uint inspectorId) external returns (bool) {
+        return InspectorLogic.suspendInspector(inspectorId, inspector);
+    }
+
+    function deleteInspector(uint inspectorId) external returns (bool) {
+        return InspectorLogic.deleteInspector(inspectorId, inspector);
+    }
 }

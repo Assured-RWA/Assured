@@ -86,7 +86,8 @@ library InspectorLogic {
     function deleteInspector(
         uint inspectorId,
         mapping(uint256 => InspectorObject.Inspector) storage _inspector
-    ) public {
+    ) public returns (bool) {
         delete _inspector[inspectorId];
+        return true;
     }
 }
