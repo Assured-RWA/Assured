@@ -71,7 +71,9 @@ library InspectorLogic {
         uint inspectorId,
         mapping(uint256 => InspectorObject.Inspector) storage _inspector
     ) internal returns (bool) {
-        _inspector[inspectorId].approved = true;
+        _inspector[inspectorId].inspectorStatus = InspectorObject
+            .InspectorStatus
+            .APPROVED;
         return true;
     }
 
@@ -79,7 +81,9 @@ library InspectorLogic {
         uint inspectorId,
         mapping(uint256 => InspectorObject.Inspector) storage _inspector
     ) internal returns (bool) {
-        _inspector[inspectorId].approved = false;
+        _inspector[inspectorId].inspectorStatus = InspectorObject
+            .InspectorStatus
+            .BLACKLISTED;
         return true;
     }
 
@@ -89,5 +93,19 @@ library InspectorLogic {
     ) public returns (bool) {
         delete _inspector[inspectorId];
         return true;
+    }
+
+    function returnInspector(
+        uint id,
+        mapping(uint256 => InspectorObject.Inspector) storage _inspector
+    ) public view returns (InspectorObject.Inspector memory) {
+        return _inspector[id];
+    }
+
+    function returnInspectorStatus(
+        uint id,
+        mapping(uint256 => InspectorObject.Inspector) storage _inspector
+    ) public view returns (InspectorObject.InspectorStatus) {
+        return _inspector[id].inspectorStatus;
     }
 }
