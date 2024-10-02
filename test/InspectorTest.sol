@@ -8,11 +8,8 @@ import {InspectorObject} from "src/inspector/libraries/InspectorObjectConstant.s
 contract InspectorTest is Test {
     Inspector private inspector = new Inspector();
 
-    function testConvertStringsToLowerCase() external pure {
-        console.log("checking the result on the console");
-    }
-
     function testRegisterInspector() external {
+        console.log("checking the result on the console");
         InspectorObject.InspectorDTO memory inspectorDTO = createInspector();
 
         uint256 inspectorId = inspector.registerInspector(inspectorDTO);
