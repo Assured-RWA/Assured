@@ -8,6 +8,7 @@ import {InspectorLogic} from "src/inspector/libraries/InspectorLogic.sol";
 contract Inspector {
     mapping(uint256 => InspectorObject.Inspector) private inspector;
     mapping(address => InspectorObject.Inspector) private inspectorMapping;
+    // uint256[] public 
     mapping(bytes => bool) private alreadyExistingName;
     mapping(address => bool) private alreadyExistingAddress;
     mapping(InspectorObject.Continent => InspectorObject.Inspector[]) private inspectorRegion;
