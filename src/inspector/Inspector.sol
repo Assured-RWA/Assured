@@ -38,16 +38,7 @@ contract Inspector {
         return InspectorLogic.suspendInspector(inspectorId, inspector);
     }
 
-    function deleteInspector(uint256 inspectorId) external returns (bool) {
-        return InspectorLogic.deleteInspector(inspectorId, inspector);
-    }
-
     function returnInspector(uint256 inspectorId) external view returns (InspectorObject.Inspector memory) {
         return InspectorLogic.returnInspector(inspectorId, inspector);
-    }
-
-    function returnInspectorstatus(uint256 inspectorId) external view returns (InspectorObject.InspectorStatus) {
-        InspectorObject.Inspector memory inspector1 = InspectorLogic.returnInspector(inspectorId, inspector);
-        return inspector1.inspectorStatus;
     }
 }

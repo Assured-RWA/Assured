@@ -102,13 +102,13 @@ library InspectorLogic {
         return true;
     }
 
-    function deleteInspector(uint256 inspectorId, mapping(uint256 => InspectorObject.Inspector) storage _inspector)
-        internal
-        returns (bool)
-    {
-        delete _inspector[inspectorId];
-        return true;
-    }
+    // function deleteInspector(uint256 inspectorId, mapping(uint256 => InspectorObject.Inspector) storage _inspector)
+    //     internal
+    //     returns (bool)
+    // {
+    //     delete _inspector[inspectorId];
+    //     return true;
+    // }
 
     function returnInspector(uint256 id, mapping(uint256 => InspectorObject.Inspector) storage _inspector)
         internal
