@@ -2,6 +2,7 @@
 pragma solidity ^0.8.26;
 
 import {DaoObjects } from "./libraries/DaoObjects.sol";
+import { DaoLogic } from "./libraries/DaoLogic.sol";
 
 contract Dao {
 
@@ -12,6 +13,11 @@ contract Dao {
     mapping (uint256 => mapping (address => bool)) private hasVoted;
     mapping (address => bool) private isBlacklisted;
     mapping (uint => DaoObjects.Proposal) public allProposals;
+
+
+    function createProposal(DaoObjects.ProposalDTO memory proposalDTO) external {
+        DaoLogic.createProposal(proposalDTO, votingDuration, allProposals);
+    }
     
     receive() external payable {}
 }

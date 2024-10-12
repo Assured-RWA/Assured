@@ -10,4 +10,9 @@ library DaoObjects {
         uint128 createdOn;
         uint128 deadline;
     }
+
+    struct ProposalDTO {
+        bytes description;
+        address creator;
+    }
 }
