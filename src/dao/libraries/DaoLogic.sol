@@ -20,7 +20,7 @@ library DaoLogic {
     {
         proposal.id = _proposalCount;
         proposal.createdOn = uint128(block.timestamp);
-        proposal.deadline = uint128(block.timestamp) + _duration;
+        proposal.deadline = block.timestamp + _duration days;
         proposal.description = _proposal.description;
         proposal.proposalCreator = _proposal.creator;
     }
