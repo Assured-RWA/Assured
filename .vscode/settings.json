@@ -7,8 +7,5 @@
         "*test.py"
     ],
     "python.testing.pytestEnabled": false,
-    "python.testing.unittestEnabled": true,
-    "wake.compiler.solc.remappings": [
-        "forge-std/=lib/forge-std/src/"
-    ]
+    "python.testing.unittestEnabled": true
 }

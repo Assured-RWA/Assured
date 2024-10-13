@@ -1,10 +1,11 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.26;
 
-import {DaoObjects} from "./libraries/DaoObjects.sol";
+import {ERC20} from "../../lib/solmate/src/tokens/ERC20.sol";
 import {DaoLogic} from "./libraries/DaoLogic.sol";
+import {DaoObjects} from "./libraries/DaoObjects.sol";
 
-contract Dao {
+contract Dao is ERC20("assured", "assured", 2) {
     uint256 public quorum;
     uint8 public votingDuration;
     uint256 public proposalCount;
