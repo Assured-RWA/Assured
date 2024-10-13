@@ -21,6 +21,7 @@ library DaoObjects {
     enum ProposalType {
         NIL,
         DISPUTE,
-        DURATION
+        DURATION,
+        QUORUM
     }
 }

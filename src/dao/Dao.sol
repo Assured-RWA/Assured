@@ -35,5 +35,10 @@ contract Dao is ERC20("assured", "assured", 2) {
         votingDuration = _duration;
     }
 
+    function changeQuorum(uint256 _quorum) private {
+        require(_quorum > 0 , "quorum cannot be zeroed");
+        quorum = _quorum;
+    }
+
     receive() external payable {}
 }
