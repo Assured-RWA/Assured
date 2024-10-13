@@ -19,7 +19,7 @@ contract Dao is ERC20("assured", "assured", 2) {
         DaoLogic.createProposal(proposalDTO, proposalCount, allProposals, votingDuration);
     }
 
-    function changeVotingDuration(uint8 _duration) private  {
+    function changeVotingDuration(uint8 _duration) private {
         require(_duration > 0, "duration period must be greater than zero");
         votingDuration = _duration;
     }
