@@ -14,7 +14,6 @@ contract Dao {
     mapping(uint256 => DaoObjects.Proposal) public allProposals;
 
     function createProposal(DaoObjects.ProposalDTO memory proposalDTO) external {
-
         proposalCount = proposalCount + 1;
         DaoLogic.createProposal(proposalDTO, votingDuration, allProposals, votingDuration);
     }

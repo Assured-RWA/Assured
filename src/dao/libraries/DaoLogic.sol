@@ -13,7 +13,6 @@ library DaoLogic {
         DaoObjects.Proposal memory proposal = _createProposal(proposalDTO, proposalCount, votingDuration);
 
         allProposal[proposalCount] = proposal;
-        
     }
 
     function _createProposal(DaoObjects.ProposalDTO memory _proposal, uint256 _proposalCount, uint8 _duration)
