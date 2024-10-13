@@ -15,4 +15,9 @@ library DaoObjects {
         bytes description;
         address creator;
     }
+    enum ProposalType {
+        NIL, 
+        DISPUTE, 
+        DURATION
+    }
 }
