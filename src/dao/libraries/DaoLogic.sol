@@ -8,20 +8,21 @@ library DaoLogic {
         DaoObjects.ProposalDTO memory proposalDTO,
         uint256 proposalCount,
         mapping(uint256 => DaoObjects.Proposal) storage allProposal,
-        uint256 votingDuration
+        uint8 votingDuration
     ) internal view {
         DaoObjects.Proposal memory proposal = _createProposal(proposalDTO, proposalCount, votingDuration);
     }
 
-    function _createProposal(DaoObjects.ProposalDTO memory _proposal, uint256 _proposalCount, uint256 _duration)
+    function _createProposal(DaoObjects.ProposalDTO memory _proposal, uint256 _proposalCount, uint8 _duration)
         private
         view
         returns (DaoObjects.Proposal memory proposal)
     {
         proposal.id = _proposalCount;
         proposal.createdOn = uint128(block.timestamp);
-        proposal.deadline = block.timestamp + _duration days;
+        proposal.deadline = block.timestamp + (uint256(_duration) * 1 days);
         proposal.description = _proposal.description;
         proposal.proposalCreator = _proposal.creator;
+        return proposal;
     }
 }

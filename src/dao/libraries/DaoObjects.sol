@@ -8,7 +8,7 @@ library DaoObjects {
         address proposalCreator;
         bool isExecuted;
         uint128 createdOn;
-        uint128 deadline;
+        uint256 deadline;
     }
 
     struct ProposalDTO {
