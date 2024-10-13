@@ -9,8 +9,11 @@ library DaoLogic {
         uint256 proposalCount,
         mapping(uint256 => DaoObjects.Proposal) storage allProposal,
         uint8 votingDuration
-    ) internal view {
+    ) internal {
         DaoObjects.Proposal memory proposal = _createProposal(proposalDTO, proposalCount, votingDuration);
+
+        allProposal[proposalCount] = proposal;
+        
     }
 
     function _createProposal(DaoObjects.ProposalDTO memory _proposal, uint256 _proposalCount, uint8 _duration)

@@ -13,7 +13,9 @@ contract Dao {
     mapping(address => bool) private isBlacklisted;
     mapping(uint256 => DaoObjects.Proposal) public allProposals;
 
-    function createProposal(DaoObjects.ProposalDTO memory proposalDTO) external view {
+    function createProposal(DaoObjects.ProposalDTO memory proposalDTO) external {
+
+        proposalCount = proposalCount + 1;
         DaoLogic.createProposal(proposalDTO, votingDuration, allProposals, votingDuration);
     }
 
