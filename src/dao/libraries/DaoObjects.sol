@@ -22,6 +22,18 @@ library DaoObjects {
         NIL,
         DISPUTE,
         DURATION,
-        QUORUM
+        QUORUM,
+        DAO
+    }
+
+      enum ProposalState {
+        Pending,
+        Active,
+        Canceled,
+        Defeated,
+        Succeeded,
+        Queued,
+        Expired,
+        Executed
     }
 }
