@@ -9,18 +9,20 @@ contract Dao is ERC20("assured", "assured", 2) {
     uint256 public quorum;
     uint8 public votingDuration;
     uint256 public proposalCount;
-    mapping(address => uint256) public membershipBalance;
+    mapping(address => bool) public isMembers;
     mapping(uint256 => mapping(address => bool)) private hasVoted;
     mapping(address => bool) private isBlacklisted;
     mapping(uint256 => DaoObjects.Proposal) public allProposals;
     address public deployer;
+    
     /**
     *@dev when deployed , it automatically mints to owner;
-    */ 
-
+    */
     constructor() {
         deployer = msg.sender;
         _mint(deployer, 100_000_000_000_000);
+        votingDuration = 3;
+        isMembers[deployer] = true;
     }
 
     function createProposal(DaoObjects.ProposalDTO memory proposalDTO) external {
