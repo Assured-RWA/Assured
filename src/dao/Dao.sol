@@ -18,5 +18,10 @@ contract Dao {
         DaoLogic.createProposal(proposalDTO, votingDuration, allProposals, votingDuration);
     }
 
+    function changeVotingDuration(uint8 _duration) private  {
+        require(_duration > 0, "duration period must be greater than zero");
+        votingDuration = _duration;
+    }
+
     receive() external payable {}
 }
