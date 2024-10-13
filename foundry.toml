@@ -5,4 +5,8 @@ libs = ["lib"]
 solc_version = "0.8.26"
 verbosity = 5
 
+remappings = [
+    "@solmate" = "lib/solmate/src/tokens"
+]
+
 # See more config options https://github.com/foundry-rs/foundry/blob/master/crates/config/README.md#all-options
