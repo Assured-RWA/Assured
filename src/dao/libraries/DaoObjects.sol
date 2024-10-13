@@ -9,6 +9,8 @@ library DaoObjects {
         bool isExecuted;
         uint128 createdOn;
         uint256 deadline;
+        uint256 forProposal;
+        uint256 againstProposal;
     }
 
     struct ProposalDTO {
