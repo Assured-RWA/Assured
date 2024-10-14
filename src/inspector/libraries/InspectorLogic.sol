@@ -2,6 +2,7 @@
 pragma solidity ^0.8.26;
 
 import {InspectorObject} from "src/inspector/libraries/InspectorObjectConstant.sol";
+import {InspectorErrors} from "src/inspector/libraries/InspectorErrors.sol";
 
 library InspectorLogic {
     function registerInspector(
@@ -29,24 +30,41 @@ library InspectorLogic {
         return inspectorCount;
     }
 
-    function checkDuplicateAddress(
+    function checkForDuplicateAndAddress(
         mapping(address => bool) storage existingAddress,
-        address inspectorAddress
-    ) internal view returns (bool result) {
+        mapping(bytes => bool) storage existingName,
+        InspectorObject.InspectorDTO memory inspectorDTO
+    ) internal view returns (bytes memory) {
+        bool duplicateAddress = checkDuplicateAddress(existingAddress, inspectorDTO.user);
+        if (duplicateAddress) {
+            revert InspectorErrors.DuplicateAddressError(inspectorDTO.user);
+        }
+        (bool result, bytes memory _name) = checkDuplicateName(existingName, inspectorDTO.name);
+        if (result) {
+            revert InspectorErrors.DuplicateUsernameError(bytes(inspectorDTO.name));
+        }
+
+        return _name;
+    }
+
+    function checkDuplicateAddress(mapping(address => bool) storage existingAddress, address inspectorAddress)
+        private
+        view
+        returns (bool result)
+    {
         return existingAddress[inspectorAddress];
     }
 
-    function checkDuplicateName(
-        mapping(bytes => bool) storage existingName,
-        string memory name
-    ) internal view returns (bool result, bytes memory) {
+    function checkDuplicateName(mapping(bytes => bool) storage existingName, string memory name)
+        private
+        view
+        returns (bool result, bytes memory)
+    {
         bytes memory convertedName = convertToLowerCase(name);
         return (result = existingName[convertedName], convertedName);
     }
 
-    function convertToLowerCase(
-        string memory input
-    ) private pure returns (bytes memory result) {
+    function convertToLowerCase(string memory input) private pure returns (bytes memory result) {
         bytes memory stringBytes = bytes(input);
         bytes memory lowerCaseBytes = new bytes(stringBytes.length);
         for (uint256 i = 0; i < stringBytes.length; i++) {
@@ -60,52 +78,51 @@ library InspectorLogic {
         result = lowerCaseBytes;
     }
 
-    function reviewInspector(
-        uint inspectorId,
-        mapping(uint256 => InspectorObject.Inspector) storage _inspector
-    ) internal view returns (InspectorObject.Inspector memory) {
+    function reviewInspector(uint256 inspectorId, mapping(uint256 => InspectorObject.Inspector) storage _inspector)
+        internal
+        view
+        returns (InspectorObject.Inspector memory)
+    {
         return _inspector[inspectorId];
     }
 
-    function approveInspector(
-        uint inspectorId,
-        mapping(uint256 => InspectorObject.Inspector) storage _inspector
-    ) internal returns (bool) {
-        _inspector[inspectorId].inspectorStatus = InspectorObject
-            .InspectorStatus
-            .APPROVED;
+    function approveInspector(uint256 inspectorId, mapping(uint256 => InspectorObject.Inspector) storage _inspector)
+        internal
+        returns (bool)
+    {
+        _inspector[inspectorId].inspectorStatus = InspectorObject.InspectorStatus.APPROVED;
         return true;
     }
 
-    function suspendInspector(
-        uint inspectorId,
-        mapping(uint256 => InspectorObject.Inspector) storage _inspector
-    ) internal returns (bool) {
-        _inspector[inspectorId].inspectorStatus = InspectorObject
-            .InspectorStatus
-            .BLACKLISTED;
+    function suspendInspector(uint256 inspectorId, mapping(uint256 => InspectorObject.Inspector) storage _inspector)
+        internal
+        returns (bool)
+    {
+        _inspector[inspectorId].inspectorStatus = InspectorObject.InspectorStatus.BLACKLISTED;
         return true;
     }
 
-    function deleteInspector(
-        uint inspectorId,
-        mapping(uint256 => InspectorObject.Inspector) storage _inspector
-    ) public returns (bool) {
-        delete _inspector[inspectorId];
-        return true;
-    }
+    // function deleteInspector(uint256 inspectorId, mapping(uint256 => InspectorObject.Inspector) storage _inspector)
+    //     internal
+    //     returns (bool)
+    // {
+    //     delete _inspector[inspectorId];
+    //     return true;
+    // }
 
-    function returnInspector(
-        uint id,
-        mapping(uint256 => InspectorObject.Inspector) storage _inspector
-    ) public view returns (InspectorObject.Inspector memory) {
+    function returnInspector(uint256 id, mapping(uint256 => InspectorObject.Inspector) storage _inspector)
+        internal
+        view
+        returns (InspectorObject.Inspector memory)
+    {
         return _inspector[id];
     }
 
-    function returnInspectorStatus(
-        uint id,
-        mapping(uint256 => InspectorObject.Inspector) storage _inspector
-    ) public view returns (InspectorObject.InspectorStatus) {
+    function returnInspectorStatus(uint256 id, mapping(uint256 => InspectorObject.Inspector) storage _inspector)
+        internal
+        view
+        returns (InspectorObject.InspectorStatus)
+    {
         return _inspector[id].inspectorStatus;
     }
 }
